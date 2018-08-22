@@ -22,11 +22,18 @@ function preFlightCheck() {
 }
 
 preFlightCheck();
-
+// Core.
+const path = require('path');
+// Contrib.
 const express = require('express');
 const helmet = require('helmet');
 const terminus = require('@godaddy/terminus');
-const asyncHandlerMiddleware = require('express-async-handler');
+const robots = require('express-robots-txt');
+// Custom.
+const adminRoutes = require('./src/route/admin');
+const apiRoutes = require('./src/route/api-v1');
+const basicAuth = require('./src/middleware/basic-auth');
+const requestLog = require('./src/middleware/request-log');
 
 function delay(t, v) {
     return new Promise(function(resolve) {
@@ -36,36 +43,21 @@ function delay(t, v) {
 
 // App
 const app = express();
-
+app.use(robots(path.join(__dirname, 'public', 'robots.txt')));
 app.use(helmet());
 app.use(express.json({
     strict: true
 }));
 
-/*
-// Header:: "Authorization: Bearer <token>"
-// @see: https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
-app.use(jwtHandlerMiddleware({
-    secret: Buffer.from(process.env.JWT_SECRET_KEY),
-    requestProperty: 'auth',
-    audience: '',
-    issuer: '',
-    algorithms: ['HS256']
-}));
 
-// https://github.com/jfromaniello/express-unless
-// jwt().unless({path: [/cica]})
-*/
-// @todo: Implement JWT auth.
-app.use(function (req, res, next) {
-    let date = new Date().toISOString();
-    console.log(`Incoming request: ${req.method} ${req.path} at ${date}`);
-    next();
-});
+app.use(requestLog);
 
 app.get('/', function (req, res) {
     return res.status(200).json({ message: 'Microsite backend reporting in.'});
 });
+
+app.use('/admin', basicAuth, adminRoutes);
+app.use('/api/v1', apiRoutes);
 
 let server = undefined;
 
