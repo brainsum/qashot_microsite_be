@@ -96,19 +96,19 @@
 # Enable API and dashboard
 [api]
 
-# Name of the related entry point
-#
-# Optional
-# Default: "traefik"
-#
-entryPoint = "traefik"
+    # Name of the related entry point
+    #
+    # Optional
+    # Default: "traefik"
+    #
+    entryPoint = "traefik"
 
-# Enabled Dashboard
-#
-# Optional
-# Default: true
-#
-dashboard = true
+    # Enabled Dashboard
+    #
+    # Optional
+    # Default: true
+    #
+    dashboard = true
 
 ################################################################
 # Ping configuration
@@ -130,16 +130,14 @@ dashboard = true
 
 # Enable Docker configuration backend
 [docker]
+    # Default endpoint.
+    endpoint = "unix:///var/run/docker.sock"
+    # Can be overridden by setting the "traefik.domain" label on a container.
+    domain = "docker.localhost"
+    # Expose containers
+    exposedByDefault = false
 
-# Default endpoint.
-endpoint = "unix:///var/run/docker.sock"
-# Can be overridden by setting the "traefik.domain" label on a container.
-domain = "docker.localhost"
-# Expose containers
-exposedByDefault = false
-
-watch = true
-
+    watch = true
 
 # Metrics definition
 [metrics]
@@ -161,3 +159,8 @@ watch = true
     # Default: [0.1, 0.3, 1.2, 5]
     #
     buckets = [0.1,0.3,1.2,5.0]
+
+[consul]
+  endpoint = "consul:8500"
+  watch = true
+  prefix = "traefik"

@@ -16,9 +16,37 @@ services:
     - "traefik.backend=web"
     - "traefik.frontend.rule=Host:${PROJECT_BASE_URL}"
     - "traefik.port=${WEB_EXPOSED_PORT}"
-    - "traefik.docker.network=frontend"
+    - "traefik.docker.network=frontend,consul"
     networks:
     - frontend
+    - consul
+
+  consul:
+    image: bitnami/consul:1.2.2
+    container_name: "${PROJECT_NAME}_consul"
+    environment:
+    - "CONSUL_BOOTSTRAP_EXPECT=1"
+    - "CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0"
+#    - "CONSUL_DISABLE_KEYRING_FILE=true"
+#    - "CONSUL_RETRY_JOIN=consul-node1"
+    restart: on-failure
+    volumes:
+    - consul_data:/bitnami
+    ports:
+    - "8300:8300"
+    - "8301:8301"
+    - "8301:8301/udp"
+    - "8500:8500"
+    - "8600:8600"
+    - "8600:8600/udp"
+    networks:
+    - consul
+    labels:
+    - "traefik.enable=true"
+    - "traefik.backend=consul"
+    - "traefik.frontend.rule=Host:consul.${PROJECT_BASE_URL}"
+    - "traefik.port=8500"
+    - "traefik.docker.network=frontend,consul"
 
   # Other.
   traefik:
@@ -30,6 +58,7 @@ services:
     - "443:443"
     networks:
     - frontend
+    - consul
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - ./traefik/traefik.toml:/etc/traefik/traefik.toml
@@ -37,7 +66,11 @@ services:
     - "traefik.enable=true"
     - "traefik.backend=traefik"
     - "traefik.frontend.rule=Host:traefik.${PROJECT_BASE_URL}"
-    - "traefik.docker.network=frontend"
+    - "traefik.docker.network=frontend,consul"
 
 networks:
   frontend: {}
+  consul: {}
+
+volumes:
+  consul_data: {}

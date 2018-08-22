@@ -14,6 +14,9 @@ services:
     - ./web:/home/node/app
     restart: "no"
 
+  consul:
+    restart: "no"
+
   traefik:
     restart: "no"
     ports:
