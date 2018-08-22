@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  web:
+    image: brainsum/qashot_microsite_backend_web:v0.1.0
+    environment:
+    - "RESULTS_RABBITMQ_URL=${RESULTS_RABBITMQ_URL}"
+    - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
+    - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
+    - "WORKER_URL=${WORKER_URL}"
+    restart: on-failure
+    labels:
+    - "traefik.enable=true"
+    - "traefik.backend=web"
+    - "traefik.frontend.rule=Host:${PROJECT_BASE_URL}"
+    - "traefik.port=${WEB_EXPOSED_PORT}"
+    - "traefik.docker.network=frontend"
+    networks:
+    - frontend
+
+  # Other.
+  traefik:
+    image: traefik:v1.6.6
+    container_name: "${PROJECT_NAME}_traefik"
+    restart: on-failure
+    ports:
+    - "80:80"
+    - "443:443"
+    networks:
+    - frontend
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./traefik/traefik.toml:/etc/traefik/traefik.toml
+    labels:
+    - "traefik.enable=true"
+    - "traefik.backend=traefik"
+    - "traefik.frontend.rule=Host:traefik.${PROJECT_BASE_URL}"
+    - "traefik.docker.network=frontend"
+
+networks:
+  frontend: {}

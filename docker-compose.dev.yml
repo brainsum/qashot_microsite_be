@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  web:
+    build:
+      context: ./web
+      args:
+        - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
+    command: ["nodemon", "index.js"]
+    environment:
+    - "NODE_ENV=development"
+    - "DEBUG='express:*'"
+    volumes:
+    - ./web:/home/node/app
+    restart: "no"
+
+  traefik:
+    restart: "no"
+    ports:
+    - "8080:8080"
+    labels:
+    - "traefik.port=8080"
