@@ -135,7 +135,7 @@ const terminusOptions = {
 };
 
 const run = async () => {
-    const PORT = process.env.EXPOSED_PORT;
+    const PORT = Number(process.env.EXPOSED_PORT);
     const HOST = '0.0.0.0';
 
     console.log('Setting the server..');
