@@ -19,6 +19,7 @@
       "format": "email"
     }
   },
+  "additionalProperties": false,
   "required": [
     "reference_url",
     "test_url",
