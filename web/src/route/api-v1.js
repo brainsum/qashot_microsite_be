@@ -28,7 +28,7 @@ function validateJsonData(data, schema) {
     if (!validationResult.valid) {
         validationResult.errors.forEach(function (error) {
             const name = error.property.split('.')[1];
-            errors[name] = `${error.instance} ${error.message}`;
+            errors[name] = `${String(data[name])} ${error.message}`;
         });
     }
     return errors;
