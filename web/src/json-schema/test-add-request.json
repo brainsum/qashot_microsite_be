@@ -11,7 +11,8 @@
       "format": "uri"
     },
     "newsletter": {
-      "type": "boolean"
+      "type": "boolean",
+      "enum": [ true ]
     },
     "email": {
       "type": "string",
