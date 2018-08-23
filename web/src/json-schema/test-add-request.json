@@ -1,0 +1,27 @@
+{
+  "id": "/TestAddRequest",
+  "type": "object",
+  "properties": {
+    "reference_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "test_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "newsletter": {
+      "type": "boolean"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    }
+  },
+  "required": [
+    "reference_url",
+    "test_url",
+    "newsletter",
+    "email"
+  ]
+}
