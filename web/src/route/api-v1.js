@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 
 const apiRouter = express.Router();
 
-apiRouter.post('/add/test', asyncHandler(async function (req, res) {
+apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     res.send('DUMMY RESPONSE.');
 }));
 
