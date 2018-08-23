@@ -10,7 +10,11 @@ services:
     - "WORKER_URL=${WORKER_URL}"
     - "ADMIN_USER=${WEB_BASIC_AUTH_USER}"
     - "ADMIN_PASS=${WEB_BASIC_AUTH_PASS}"
+    - "POSTGRES_USER=${POSTGRES_USER}"
+    - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
     restart: on-failure
+    depends_on:
+    - postgres
     labels:
     - "traefik.enable=true"
     - "traefik.backend=web"
@@ -19,6 +23,22 @@ services:
     - "traefik.docker.network=frontend"
     networks:
     - frontend
+    - backend
+
+  postgres:
+    image: bitnami/postgresql:10.5.0
+    container_name: "${PROJECT_NAME}_postgres"
+    restart: on-failure
+    environment:
+    - "POSTGRESQL_USERNAME=${POSTGRES_USER}"
+    - "POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}"
+    - "POSTGRESQL_DATABASE=microsite-db"
+    ports:
+    - 5432:5432
+    volumes:
+    - postgresql_data:/bitnami
+    networks:
+    - backend
 
   # Other.
   traefik:
@@ -41,3 +61,7 @@ services:
 
 networks:
   frontend: {}
+  backend: {}
+
+volumes:
+  postgresql_data: {}
