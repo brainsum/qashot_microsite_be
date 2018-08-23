@@ -48,6 +48,8 @@ function delay(t, v) {
 
 // App
 const app = express();
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.use(robots(path.join(__dirname, 'public', 'robots.txt')));
 app.use(helmet());
 app.use(express.json({
