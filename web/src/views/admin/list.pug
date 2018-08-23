@@ -1,0 +1,38 @@
+//- users.pug
+
+h1 Tests
+
+////- this will simply generate a link to sort by name
+////- note how we only have to pass the querystring param
+////- that we want to modify here, not the entire querystring
+//a(href=paginate.href({ sort: 'name' })) Sort by name
+//
+////- this assumes you have `?age=1` or `?age=-1` in the querystring
+////- so this will basically negate the value and give you
+////- the opposite sorting order (desc with -1 or asc with 1)
+//a(href=paginate.href({ sort: req.query.age === '1' ? -1 : 1 })) Sort by age
+
+table
+    thead
+        tr
+            th="Id"
+            th="Email address"
+            th="Newsletter"
+            th="Requested at"
+            th="Email sent"
+            th="Results ZIP"
+            th="Reference URL"
+            th="Test URL"
+    tbody
+        each test in tests
+            tr
+                td= test.id
+                td= test.email
+                td= test.newsletter
+                td= test.createdAt
+                td= "n/a"
+                td= "n/a"
+                td= test.reference_url
+                td= test.test_url
+
+include _paginate
