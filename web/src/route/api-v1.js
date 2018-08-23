@@ -7,6 +7,7 @@ const asyncHandler = require('express-async-handler');
 const validator = require('jsonschema');
 const schemaLoader = require('../lib/schema-loader');
 const db = require('../database');
+const worker = require('../lib/qashot-worker');
 
 let testAddSchema = undefined;
 
@@ -76,6 +77,8 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
             message: 'Existing email address.'
         });
     }
+
+    const message = worker.addTest(test);
 
     return res.status(200).json({
         message: 'Created.',
