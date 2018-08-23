@@ -34,6 +34,7 @@
     "express-jwt": "^5.3.1",
     "express-robots-txt": "^0.4.0",
     "helmet": "^3.13.0",
+    "jsonschema": "^1.2.4",
     "tsscmp": "^1.0.6"
   },
   "devDependencies": {
