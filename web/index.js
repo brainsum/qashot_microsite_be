@@ -5,7 +5,11 @@ function preFlightCheck() {
         'JWT_SECRET_KEY',
         'EXPOSED_PORT',
         'RESULTS_RABBITMQ_URL',
-        'WORKER_URL'
+        'WORKER_URL',
+        'POSTGRES_USER',
+        'POSTGRES_PASSWORD',
+        'ADMIN_USER',
+        'ADMIN_PASS'
     ];
 
     let success = true;
@@ -30,6 +34,7 @@ const helmet = require('helmet');
 const terminus = require('@godaddy/terminus');
 const robots = require('express-robots-txt');
 // Custom.
+const db = require('./src/database');
 const adminRoutes = require('./src/route/admin');
 const apiRoutes = require('./src/route/api-v1');
 const basicAuth = require('./src/middleware/basic-auth');
@@ -48,7 +53,6 @@ app.use(helmet());
 app.use(express.json({
     strict: true
 }));
-
 
 app.use(requestLog);
 
@@ -130,11 +134,23 @@ const run = async () => {
     const PORT = Number(process.env.EXPOSED_PORT);
     const HOST = '0.0.0.0';
 
-    console.log('Setting the server..');
+    try {
+        const sync = await db.connection.sync();
+    }
+    catch (error) {
+        const timeout = 3000;
+
+        console.error(`Error while running sync(). Retry in ${timeout / 1000} seconds..`);
+        await delay(timeout);
+        return await run();
+    }
+
     server = app.listen(PORT, HOST, function () {
-        console.log(`Running on http://${HOST}:${PORT}`);
+        console.log(`Express running on http://${HOST}:${PORT}`);
         terminus(server, terminusOptions);
     });
+
+    return 'Running.'
 };
 
 run();
