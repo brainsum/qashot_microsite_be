@@ -78,7 +78,9 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         });
     }
 
+    // @todo: On remote failure? Another service that only reads+posts? Or what?
     const message = worker.addTest(test);
+    console.log(message);
 
     return res.status(200).json({
         message: 'Created.',

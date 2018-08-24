@@ -7,7 +7,7 @@ const request = require('request');
 
 function sendToWorker(payload) {
     const reqConfig = {
-        url: `${ADD_ENDPOINT}/api/v1/test/add`,
+        url: `${ADD_ENDPOINT}`,
         json: payload
     };
 
@@ -57,38 +57,17 @@ function generateBackstopConfig(test) {
             "onReadyScript": "onReady.js"
         }
     ];
-    /*
-    @todo: What else:
-    	    "paths": {
-	        "casper_scripts": "../private_files/qa_test_data/6/casper_scripts",
-	        "bitmaps_reference": "sites/default/files/qa_test_data/6/reference",
-	        "bitmaps_test": "sites/default/files/qa_test_data/6/test",
-	        "html_report": "sites/default/files/qa_test_data/6/html_report",
-	        "ci_report": "sites/default/files/qa_test_data/6/ci_report"
-	    },
-	    "engine": "slimerjs",
-	    "report": [
-	        "CI"
-	    ],
-	    "casperFlags": [
-	        "--ignore-ssl-errors=true",
-	        "--ssl-protocol=any"
-	    ],
-	    "resembleOutputOptions": {
-	        "errorColor": {
-	            "red": 255,
-	            "green": 255,
-	            "blue": 255
-	        },
-	        "errorType": "movement",
-	        "transparency": "0.3",
-	        "largeImageThreshold": "1200",
-	        "useCrossOrigin": true
-	    },
-	    "asyncCompareLimit": 10,
-	    "asyncCaptureLimit": 10,
-	    "debug": false
-     */
+    backstopConfig.resembleOutputOptions = {
+        "errorColor": {
+            "red": 255,
+            "green": 255,
+            "blue": 255
+        },
+        "errorType": "movement",
+        "transparency": 0.3,
+        "largeImageThreshold": 1200,
+        "useCrossOrigin": true
+    };
 
     return backstopConfig;
 }
@@ -99,7 +78,7 @@ async function addTest(test) {
         mode: 'a_b',
         stage: '',
         uuid: test.uuid,
-        testerConfig: generateBackstopConfig(test)
+        test_config: generateBackstopConfig(test)
     };
 
     sendToWorker(payload);
