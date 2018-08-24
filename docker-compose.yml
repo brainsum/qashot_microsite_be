@@ -12,6 +12,7 @@ services:
     - "ADMIN_PASS=${WEB_BASIC_AUTH_PASS}"
     - "POSTGRES_USER=${POSTGRES_USER}"
     - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+    - "PROJECT_ENVIRONMENT=production"
     restart: on-failure
     depends_on:
     - postgres
@@ -20,9 +21,36 @@ services:
     - "traefik.backend=web"
     - "traefik.frontend.rule=Host:${PROJECT_BASE_URL}"
     - "traefik.port=${WEB_EXPOSED_PORT}"
-    - "traefik.docker.network=frontend"
+    - "traefik.docker.network=frontend,backend"
     networks:
     - frontend
+    - backend
+
+  mailer:
+    image: brainsum/qashot_microsite_backend_mailer:v0.1.0
+    environment:
+    - "RESULTS_RABBITMQ_URL=${RESULTS_RABBITMQ_URL}"
+    - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
+    - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
+    - "POSTGRES_USER=${POSTGRES_USER}"
+    - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+    - "MAILER_HOST=${MAILER_HOST}"
+    - "MAILER_PORT=${MAILER_PORT}"
+    - "MAILER_USER=${MAILER_USER}"
+    - "MAILER_PASS=${MAILER_PASS}"
+    - "PROJECT_ENVIRONMENT=production"
+    restart: on-failure
+    depends_on:
+    - postgres
+    labels:
+    # @todo: Maybe enable with an admin ui, but likely not needed, web should read the stuff.
+    - "traefik.enable=false"
+    - "traefik.backend=mailer"
+    - "traefik.frontend.rule=Host:mailer.${PROJECT_BASE_URL}"
+    - "traefik.port=${WEB_EXPOSED_PORT}"
+    - "traefik.docker.network=mailer,backend"
+    networks:
+    - mailer
     - backend
 
   postgres:
@@ -62,6 +90,7 @@ services:
 networks:
   frontend: {}
   backend: {}
+  mailer: {}
 
 volumes:
   postgresql_data: {}

@@ -30,15 +30,12 @@ async function checkConnection() {
 checkConnection();
 
 const models = {};
-const definitions = require('./definitions');
-
-for (const name in definitions) {
-    models[name] = connection.define(name, definitions[name].attributes, definitions[name].options);
-}
-
-// Associations:
-models.Result.belongsTo(models.Test, {foreignKey: 'uuid', targetKey: 'uuid'});
-models.Notification.belongsTo(models.Test, {foreignKey: 'uuid', targetKey: 'uuid'});
+// @todo: Fix "Result" and "Notification", then re-enable this.
+// const definitions = require('./definitions');
+//
+// for (const name in definitions) {
+//     models[name] = connection.define(name, definitions[name]);
+// }
 
 module.exports = {
     connection,

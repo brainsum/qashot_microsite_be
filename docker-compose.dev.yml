@@ -10,8 +10,23 @@ services:
     environment:
     - "NODE_ENV=development"
     - "DEBUG='express:*'"
+    - "PROJECT_ENVIRONMENT=development"
     volumes:
     - ./web:/home/node/app
+    restart: "no"
+
+  mailer:
+    build:
+      context: ./mailer
+      args:
+      - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
+    command: ["nodemon", "index.js"]
+    environment:
+    - "NODE_ENV=development"
+    - "DEBUG='express:*'"
+    - "PROJECT_ENVIRONMENT=development"
+    volumes:
+    - ./mailer:/home/node/app
     restart: "no"
 
   postgres:
