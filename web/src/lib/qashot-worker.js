@@ -78,6 +78,7 @@ async function addTest(test) {
         mode: 'a_b',
         stage: '',
         uuid: test.uuid,
+        environment: process.env.PROJECT_ENVIRONMENT || 'development',
         test_config: generateBackstopConfig(test)
     };
 
