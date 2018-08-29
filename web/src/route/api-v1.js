@@ -10,6 +10,7 @@ const db = require('../database');
 const worker = require('../lib/qashot-worker');
 
 let testAddSchema = undefined;
+const emailLimit = 20;
 
 schemaLoader('test-add-request.json').then(schema => {
     testAddSchema = schema;
@@ -52,19 +53,37 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         });
     }
 
-    let test = undefined;
-    let isNew = false;
+    /**
+     * @var Test
+     * @type {Sequelize.Model}
+     */
+    const Test = db.models.Test;
+    let existingTests = 0;
 
     try {
-        /**
-         * @type {Sequelize.Model}
-         */
-        const Test = db.models.Test;
-        [test, isNew] = await Test.findOrCreate({
-            where: { email: data.email },
-            // The validation only allows the required fields, so this should be OK.
-            defaults: data
+        existingTests = await Test.count({
+            where: { email: data.email }
         });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error
+        });
+    }
+
+    if (existingTests >= emailLimit) {
+        return res.status(500).json({
+            message: `Test limit of ${emailLimit} reached for email ${data.email}.`
+        });
+    }
+
+    let newTest = undefined;
+    let isNew = false;
+
+
+    try {
+        // The validation only allows the required fields, so this should be OK.
+        newTest = await Test.create(data);
     }
     catch (error) {
         return res.status(500).json({
@@ -79,12 +98,12 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     }
 
     // @todo: On remote failure? Another service that only reads+posts? Or what?
-    const message = worker.addTest(test);
+    const message = worker.addTest(newTest);
     console.log(message);
 
     return res.status(200).json({
         message: 'Created.',
-        test: test
+        test: newTest
     });
 }));
 
