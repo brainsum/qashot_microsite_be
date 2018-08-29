@@ -1,8 +1,8 @@
 'use strict';
 
 const Sequelize = require('sequelize');
-const connection = new Sequelize('microsite-db', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
-    host: 'postgres',
+const connection = new Sequelize('web_db', process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: 'web_db',
     dialect: 'postgres',
 
     pool: {
@@ -35,10 +35,6 @@ const definitions = require('./definitions');
 for (const name in definitions) {
     models[name] = connection.define(name, definitions[name].attributes, definitions[name].options);
 }
-
-// Associations:
-models.Result.belongsTo(models.Test, {foreignKey: 'uuid', targetKey: 'uuid'});
-models.Notification.belongsTo(models.Test, {foreignKey: 'uuid', targetKey: 'uuid'});
 
 module.exports = {
     connection,

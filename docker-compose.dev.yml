@@ -19,7 +19,7 @@ services:
     build:
       context: ./mailer
       args:
-      - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
+      - "EXPOSED_PORT=${MAILER_EXPOSED_PORT}"
     command: ["nodemon", "index.js"]
     environment:
     - "NODE_ENV=development"
@@ -29,7 +29,10 @@ services:
     - ./mailer:/home/node/app
     restart: "no"
 
-  postgres:
+  web_db:
+    restart: "no"
+
+  mailer_db:
     restart: "no"
 
   adminer:
@@ -37,18 +40,19 @@ services:
     container_name: "${PROJECT_NAME}_adminer"
     restart: "no"
     environment:
-    - "ADMINER_DB_USER=${POSTGRES_USER}"
-    - "ADMINER_DEFAULT_SERVER=postgres"
+    - "ADMINER_DB_USER=${WEB_DB_USER}"
+    - "ADMINER_DEFAULT_SERVER=web_db"
     depends_on:
-    - postgres
+    - web_db
+    - mailer_db
     networks:
-    - backend
+    - mailer_database
+    - web_database
     labels:
     - "traefik.enable=true"
     - "traefik.backend=adminer"
     - "traefik.port=8080"
     - "traefik.frontend.rule=Host:adminer.${PROJECT_BASE_URL}"
-    - "traefik.docker.network=backend"
 
   traefik:
     restart: "no"

@@ -1,7 +1,7 @@
 # Build
 FROM node:10.9.0-alpine
 
-ARG EXPOSED_PORT=4000
+ARG EXPOSED_PORT
 
 LABEL maintainer="mhavelant"
 

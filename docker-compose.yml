@@ -3,37 +3,52 @@ version: "3.7"
 services:
   web:
     image: brainsum/qashot_microsite_backend_web:v0.1.0
+    container_name: "${PROJECT_NAME}_web"
     environment:
-    - "RESULTS_RABBITMQ_URL=${RESULTS_RABBITMQ_URL}"
     - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
     - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
     - "WORKER_URL=${WORKER_URL}"
-    - "ADMIN_USER=${WEB_BASIC_AUTH_USER}"
-    - "ADMIN_PASS=${WEB_BASIC_AUTH_PASS}"
-    - "POSTGRES_USER=${POSTGRES_USER}"
-    - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+    - "ADMIN_USER=${WEB_ADMIN_USER}"
+    - "ADMIN_PASS=${WEB_ADMIN_PASS}"
+    - "DB_USER=${WEB_DB_USER}"
+    - "DB_PASSWORD=${WEB_DB_PASSWORD}"
     - "PROJECT_ENVIRONMENT=production"
     restart: on-failure
     depends_on:
-    - postgres
+    - web_db
     labels:
     - "traefik.enable=true"
     - "traefik.backend=web"
     - "traefik.frontend.rule=Host:${PROJECT_BASE_URL}"
     - "traefik.port=${WEB_EXPOSED_PORT}"
-    - "traefik.docker.network=frontend,backend"
+    - "traefik.docker.network=frontend,web_database"
     networks:
     - frontend
     - backend
+    - web_database
+
+  web_db:
+    image: bitnami/postgresql:10.5.0
+    container_name: "${PROJECT_NAME}_web_db"
+    restart: on-failure
+    environment:
+    - "POSTGRESQL_USERNAME=${WEB_DB_USER}"
+    - "POSTGRESQL_PASSWORD=${WEB_DB_PASSWORD}"
+    - "POSTGRESQL_DATABASE=web_db"
+    volumes:
+    - web_db_data:/bitnami
+    networks:
+    - web_database
 
   mailer:
     image: brainsum/qashot_microsite_backend_mailer:v0.1.0
+    container_name: "${PROJECT_NAME}_mailer"
     environment:
     - "RESULTS_RABBITMQ_URL=${RESULTS_RABBITMQ_URL}"
     - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
-    - "EXPOSED_PORT=${WEB_EXPOSED_PORT}"
-    - "POSTGRES_USER=${POSTGRES_USER}"
-    - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+    - "EXPOSED_PORT=${MAILER_EXPOSED_PORT}"
+    - "DB_USER=${MAILER_DB_USER}"
+    - "DB_PASSWORD=${MAILER_DB_PASSWORD}"
     - "MAILER_HOST=${MAILER_HOST}"
     - "MAILER_PORT=${MAILER_PORT}"
     - "MAILER_USER=${MAILER_USER}"
@@ -41,32 +56,30 @@ services:
     - "PROJECT_ENVIRONMENT=production"
     restart: on-failure
     depends_on:
-    - postgres
+    - mailer_db
     labels:
     # @todo: Maybe enable with an admin ui, but likely not needed, web should read the stuff.
     - "traefik.enable=false"
     - "traefik.backend=mailer"
     - "traefik.frontend.rule=Host:mailer.${PROJECT_BASE_URL}"
-    - "traefik.port=${WEB_EXPOSED_PORT}"
-    - "traefik.docker.network=mailer,backend"
+    - "traefik.port=${MAILER_EXPOSED_PORT}"
+    - "traefik.docker.network=mailer_database"
     networks:
-    - mailer
     - backend
+    - mailer_database
 
-  postgres:
+  mailer_db:
     image: bitnami/postgresql:10.5.0
-    container_name: "${PROJECT_NAME}_postgres"
+    container_name: "${PROJECT_NAME}_mailer_db"
     restart: on-failure
     environment:
-    - "POSTGRESQL_USERNAME=${POSTGRES_USER}"
-    - "POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}"
-    - "POSTGRESQL_DATABASE=microsite-db"
-    ports:
-    - 5432:5432
+    - "POSTGRESQL_USERNAME=${MAILER_DB_USER}"
+    - "POSTGRESQL_PASSWORD=${MAILER_DB_PASSWORD}"
+    - "POSTGRESQL_DATABASE=mailer_db"
     volumes:
-    - postgresql_data:/bitnami
+    - mailer_db_data:/bitnami
     networks:
-    - backend
+    - mailer_database
 
   # Other.
   traefik:
@@ -90,7 +103,9 @@ services:
 networks:
   frontend: {}
   backend: {}
-  mailer: {}
+  mailer_database: {}
+  web_database: {}
 
 volumes:
-  postgresql_data: {}
+  mailer_db_data: {}
+  web_db_data: {}

@@ -4,12 +4,12 @@ function preFlightCheck() {
     const requiredEnvVars = [
         'JWT_SECRET_KEY',
         'EXPOSED_PORT',
-        'RESULTS_RABBITMQ_URL',
         'WORKER_URL',
-        'POSTGRES_USER',
-        'POSTGRES_PASSWORD',
         'ADMIN_USER',
-        'ADMIN_PASS'
+        'ADMIN_PASS',
+        'DB_USER',
+        'DB_PASSWORD',
+        'PROJECT_ENVIRONMENT'
     ];
 
     let success = true;
