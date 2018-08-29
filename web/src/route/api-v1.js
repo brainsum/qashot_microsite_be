@@ -116,9 +116,6 @@ apiRouter.post('/test/get', asyncHandler(async function (req, res) {
         });
     }
 
-    const util = require('util');
-    console.log(util.inspect(existingTest));
-
     return res.status(200).json({
         test: existingTest
     });
