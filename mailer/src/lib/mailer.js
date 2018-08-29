@@ -28,7 +28,7 @@ module.exports = class Mailer {
             to: recipient,
             subject: 'QAShot.com visual comparison results',
             // @todo: use data.
-            html: resultsMailTemplate({ name: 'My friend' })
+            html: resultsMailTemplate(data)
         };
 
 

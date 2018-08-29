@@ -15,6 +15,11 @@ module.exports = {
             defaultValue: DataTypes.UUIDV4,
             allowNull: false
         },
+        sentAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
+        },
         status: {
             type: DataTypes.BOOLEAN,
             allowNull: false

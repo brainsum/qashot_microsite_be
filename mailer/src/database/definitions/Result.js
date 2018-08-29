@@ -15,7 +15,12 @@ module.exports = {
             defaultValue: DataTypes.UUIDV4,
             allowNull: false
         },
-        raw_data: {
+        receivedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
+        },
+        rawData: {
             type: DataTypes.JSONB,
             allowNull: false
         }

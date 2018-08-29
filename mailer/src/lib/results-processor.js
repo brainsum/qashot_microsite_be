@@ -16,16 +16,57 @@ function delay(t, v) {
 
 async function storeResults(results) {
     const uuid = results.metadata.uuid;
-    // @todo: Query the Tests table
-    // @todo: Add Results DB table.
-    // @todo: Store results in the DB.
-    return Promise.resolve({data: 'yes'}, true);
+
+    let storedResults = undefined;
+    try {
+        /**
+         * @type {Sequelize.Model}
+         */
+        const Result = db.models.Result;
+        storedResults = await Result.create({
+            uuid: uuid,
+            rawData: results
+        });
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+
+    return Promise.resolve(storedResults.get({ plain: true }), true);
+}
+
+async function getTestData(uuid) {
+    // @todo: Move to web-client.
+    const request = require('request');
+
+    const requestConfig = {
+        url: 'http://web:4000/api/v1/test/get',
+        json: { uuid: uuid }
+    };
+
+
+    return new Promise((resolve, reject) => {
+        request.post(requestConfig, function (err, httpResponse, body) {
+            if (err) {
+                console.error(`Getting the test data for ${uuid} failed. Error: ${err}`);
+                return reject(err);
+            }
+
+            return resolve(body.test);
+        });
+    });
+
 }
 
 async function sendEmail(results) {
-    const uuid = results.metadata.uuid;
-    // @todo: Read the actual recipient from the model using fk-s.
-    return ResultsMailer.sendMail('mhavelant+qasmstest@brainsum.com', {reference_url: "http://www.google.com", test_url: "http://www.google.com"})
+    const uuid = results.uuid;
+
+    const testData = await getTestData(uuid);
+    const templateData = {
+        reference_url: testData.reference_url,
+        test_url: testData.test_url
+    };
+    return ResultsMailer.sendMail(testData.email, templateData);
 }
 
 async function storeEmail(result) {
@@ -68,7 +109,7 @@ async function ResultsQueueReadDummy(channelName) {
         "metadata": {
             "id": "9",
             // @todo: This is just a test, uuid-s are not yet sent back, sadly.
-            "uuid": "853b1f07-8a78-4cac-9f2f-7cc047801870",
+            "uuid": "0e35c836-032e-43fc-8868-d6be0efc2264",
             "mode": "a_b",
             "stage": null,
             "browser": "firefox",
