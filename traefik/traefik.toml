@@ -7,14 +7,14 @@
 # Optional
 # Default: false
 #
-# debug = true
+#debug = true
 
 # Log level
 #
 # Optional
 # Default: "ERROR"
 #
-# logLevel = "DEBUG"
+logLevel = "DEBUG"
 
 # Entrypoints to be used by frontends that do not specify any entrypoint.
 # Each frontend can specify its own entrypoints.
@@ -22,7 +22,7 @@
 # Optional
 # Default: ["http"]
 #
-# defaultEntryPoints = ["http", "https"]
+defaultEntryPoints = ["http"]
 
 ################################################################
 # Entrypoints configuration
@@ -33,8 +33,8 @@
 # Optional
 # Default:
 [entryPoints]
-    [entryPoints.http]
-    address = ":80"
+  [entryPoints.http]
+  address = ":80"
 
 ################################################################
 # Traefik logs configuration
@@ -101,14 +101,16 @@
 # Optional
 # Default: "traefik"
 #
-entryPoint = "traefik"
+  entryPoint = "traefik"
 
 # Enabled Dashboard
 #
 # Optional
 # Default: true
 #
-dashboard = true
+  dashboard = true
+
+#  debug = true
 
 ################################################################
 # Ping configuration
@@ -122,7 +124,7 @@ dashboard = true
   # Optional
   # Default: "traefik"
   #
-  # entryPoint = "traefik"
+  entryPoint = "traefik"
 
 ################################################################
 # Docker configuration backend
@@ -132,14 +134,12 @@ dashboard = true
 [docker]
 
 # Default endpoint.
-endpoint = "unix:///var/run/docker.sock"
+  endpoint = "unix:///var/run/docker.sock"
 # Can be overridden by setting the "traefik.domain" label on a container.
-domain = "docker.localhost"
+  domain = "microsite.qashot.localhost"
 # Expose containers
-exposedByDefault = false
-
-watch = true
-
+  exposedByDefault = false
+  watch = true
 
 # Metrics definition
 [metrics]
