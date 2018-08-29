@@ -37,9 +37,6 @@ for (const name in definitions) {
     models[name] = connection.define(name, definitions[name].attributes, definitions[name].options);
 }
 
-// Associations:
-models.Notification.belongsTo(models.Result, {foreignKey: 'uuid', targetKey: 'uuid'});
-
 module.exports = {
     connection,
     models
