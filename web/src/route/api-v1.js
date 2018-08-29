@@ -54,7 +54,6 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     }
 
     /**
-     * @var Test
      * @type {Sequelize.Model}
      */
     const Test = db.models.Test;
@@ -78,8 +77,6 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     }
 
     let newTest = undefined;
-    let isNew = false;
-
 
     try {
         // The validation only allows the required fields, so this should be OK.
@@ -91,12 +88,6 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         });
     }
 
-    if (!isNew) {
-        return res.status(400).json({
-            message: 'Existing email address.'
-        });
-    }
-
     // @todo: On remote failure? Another service that only reads+posts? Or what?
     const message = worker.addTest(newTest);
     console.log(message);
@@ -104,6 +95,32 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     return res.status(200).json({
         message: 'Created.',
         test: newTest
+    });
+}));
+
+apiRouter.post('/test/get', asyncHandler(async function (req, res) {
+    const uuid = req.body.uuid;
+
+    /**
+     * @type {Sequelize.Model}
+     */
+    const Test = db.models.Test;
+
+    let existingTest = undefined;
+    try {
+        existingTest = await Test.findOne({ where: { uuid: uuid }});
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error
+        });
+    }
+
+    const util = require('util');
+    console.log(util.inspect(existingTest));
+
+    return res.status(200).json({
+        test: existingTest
     });
 }));
 
