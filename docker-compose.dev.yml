@@ -53,10 +53,9 @@ services:
     - "traefik.backend=adminer"
     - "traefik.port=8080"
     - "traefik.frontend.rule=Host:adminer.${PROJECT_BASE_URL}"
+    - "traefik.docker.network=${PROJECT_NAME}_mailer_database"
 
   traefik:
     restart: "no"
     ports:
     - "8080:8080"
-    labels:
-    - "traefik.port=8080"
