@@ -41,8 +41,7 @@ function generateBackstopConfig(test) {
     ];
     backstopConfig.scenarios = [
         {
-            // @todo: Rename to something verbose.
-            label: test.uuid,
+            label: 'QAShot visual comparison',
             referenceUrl: test.reference_url,
             url: test.url,
             "readyEvent": null,
