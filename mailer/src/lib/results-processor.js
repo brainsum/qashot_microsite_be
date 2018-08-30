@@ -62,15 +62,15 @@ async function sendEmail(results) {
     const uuid = results.uuid;
 
     const testData = await getTestData(uuid);
-    const testEndDate = new Date(new Date(results.metadata.duration.full.end).getTime() + 12096e5);
+    const testEndDate = new Date(new Date(results.rawData.metadata.duration.full.end).getTime() + 12096e5);
     const formatter = new Intl.DateTimeFormat('en', {month: 'long'});
 
     const templateData = {
         reference_url: testData.reference_url,
         test_url: testData.test_url,
-        success: results.metadata.success,
+        success: results.rawData.metadata.success,
         // @todo: get results url from results.
-        results_url: '',
+        results_url: 'www.google.com',
         results_removal_date: `${testEndDate.getDay()} ${formatter.format(testEndDate.getMonth())}, ${testEndDate.getFullYear()}`,
     };
     return ResultsMailer.sendMail(testData.email, templateData);

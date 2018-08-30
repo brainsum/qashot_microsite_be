@@ -28,7 +28,7 @@ module.exports = class Mailer {
             to: recipient,
             subject: `QAShot.com visual comparison results - ${data.success === true ? 'PASSED' : 'FAILED'}`,
             // @todo: use data.
-            html: resultsMailTemplate(data)
+            html: resultsMailTemplate({data: data})
         };
 
 
