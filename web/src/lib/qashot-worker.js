@@ -78,6 +78,7 @@ async function addTest(test) {
         mode: 'a_b',
         stage: '',
         uuid: test.uuid,
+        origin: 'microsite',
         environment: process.env.PROJECT_ENVIRONMENT,
         test_config: generateBackstopConfig(test)
     };
