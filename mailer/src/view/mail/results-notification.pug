@@ -1,14 +1,27 @@
-h2 "HELLO"
+p Thanks for using QAShot.com!
 
-span How are you, #{name}?
+p Website instance 1:
+    a(href=data.results_url) #{data.reference_url}
+
+p Website instance 2:
+    a(href=data.results_url) #{data.test_url}
+
+p View the results
+
+p Check the result of the visual comparison of Website instance 1 and 2:
+a(href=data.results_url target='_blank' rel='noopener noreferrer') #{data.results_url}
 
 
-Thanks for using Qashot!
+p The results will be deleted on #{data.results_removal_date}.
 
-URL1: data.reference_url
-URL2: data.reference_url
-Download the result of the visual comparison of UR1 and URL2: …..zip
-Will be deleted on 4 June, 2018
-
-www.qashot.com
-Visual regression testing tool
+p NEED PRO OR ENTERPRISE FEATURES?
+ul
+    li on-premise version
+    li more viewports (incl. mobile)
+    li saved screenshots
+    li multiple urls, campaigns
+    li scheduled re-running
+    li ignore blocks
+    li alerts
+    li API
+    li 24/7 support

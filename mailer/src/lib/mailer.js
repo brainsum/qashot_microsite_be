@@ -26,7 +26,7 @@ module.exports = class Mailer {
         const mailOptions = {
             from: 'no-reply@qashot.com',
             to: recipient,
-            subject: 'QAShot.com visual comparison results',
+            subject: `QAShot.com visual comparison results - ${data.success === true ? 'PASSED' : 'FAILED'}`,
             // @todo: use data.
             html: resultsMailTemplate(data)
         };
