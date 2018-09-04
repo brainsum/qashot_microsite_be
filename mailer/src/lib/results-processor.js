@@ -44,6 +44,15 @@ async function getTestData(uuid) {
         json: { uuid: uuid }
     };
 
+    // @todo: Remove this.
+    if (process.env.NODE_ENV === 'development') {
+        // On dev, for testing, add dummy data.
+        return Promise.resolve({
+            reference_url: 'http://www.google.com',
+            test_url: 'http://www.google.hu',
+            email: `user+${uuid}@example.com`
+        });
+    }
 
     return new Promise((resolve, reject) => {
         request.post(requestConfig, function (err, httpResponse, body) {
@@ -61,7 +70,14 @@ async function getTestData(uuid) {
 async function sendEmail(results) {
     const uuid = results.uuid;
 
-    const testData = await getTestData(uuid);
+    let testData = undefined;
+    try {
+        testData = await getTestData(uuid);
+    }
+    catch (error) {
+        throw error;
+    }
+
     const testEndDate = new Date(new Date(results.rawData.metadata.duration.full.end).getTime() + 12096e5);
     const formatter = new Intl.DateTimeFormat('en', {month: 'long'});
 
@@ -70,16 +86,37 @@ async function sendEmail(results) {
         test_url: testData.test_url,
         success: results.rawData.metadata.success,
         // @todo: get results url from results.
-        results_url: 'www.google.com',
+        results_url: results.rawData.resultsUrl,
         results_removal_date: `${testEndDate.getDay()} ${formatter.format(testEndDate.getMonth())}, ${testEndDate.getFullYear()}`,
     };
-    return ResultsMailer.sendMail(testData.email, templateData);
+
+    try {
+        let mailData = await ResultsMailer.sendMail(testData.email, templateData);
+        mailData.uuid = uuid;
+        return Promise.resolve(mailData);
+    }
+    catch (error) {
+        let errorData = error;
+        errorData.uuid = uuid;
+        return Promise.reject(errorData);
+    }
 }
 
 async function storeEmail(result) {
-    // @todo: Add Notifications DB table.
-    // @todo: Store email results in DB.
-    return Promise.resolve('stored');
+    let storedNotification = undefined;
+    try {
+        const NotificationModel = db.models.Notification;
+        storedNotification = await NotificationModel.create({
+            uuid: result.uuid,
+            status: 200 <= result.code && result.code < 400,
+            message: result.message
+        });
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+
+    return Promise.resolve(storedNotification.get({ plain: true }), true);
 }
 
 function loop() {
@@ -94,6 +131,10 @@ function loop() {
         .then(result => {
             return storeEmail(result);
         })
+        // .then(function () {
+        //     console.log('waiting a bit, dummy request');
+        //     return delay(timeout + 50000);
+        // })
         .then(function restartResultsLoop() {
             console.timeEnd('resultsProcessorLoop');
             loop();
@@ -112,11 +153,14 @@ module.exports = {
 };
 
 async function ResultsQueueReadDummy(channelName) {
+    const uuid = require('uuid/v4');
+
+    const currentUuid = uuid();
+
     return Promise.resolve({
         "metadata": {
             "id": "9",
-            // @todo: This is just a test, uuid-s are not yet sent back, sadly.
-            "uuid": "0e35c836-032e-43fc-8868-d6be0efc2264",
+            "uuid": currentUuid,
             "mode": "a_b",
             "stage": null,
             "browser": "firefox",
@@ -168,6 +212,7 @@ async function ResultsQueueReadDummy(channelName) {
                 "diffImage": "../test/20180824-142541/failed_diff_9_405bc5b5-6fd3-4b8f-9196-f22331bf3c90_0_document_1_Mobile.png",
                 "misMatchPercentage": "6.88"
             }
-        ]
+        ],
+        "resultsUrl": "http://www.brainsum.com"
     });
 }
