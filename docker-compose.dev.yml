@@ -28,6 +28,8 @@ services:
     volumes:
     - ./mailer:/home/node/app
     restart: "no"
+    labels:
+    - "traefik.enable=true"
 
   web_db:
     restart: "no"

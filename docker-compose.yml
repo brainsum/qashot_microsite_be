@@ -64,7 +64,6 @@ services:
     - backend
     - mailer_database
     labels:
-    # @todo: Maybe enable with an admin ui, but likely not needed, web should read the stuff.
     - "traefik.enable=false"
     - "traefik.backend=mailer"
     - "traefik.frontend.rule=Host:mailer.${PROJECT_BASE_URL}"
