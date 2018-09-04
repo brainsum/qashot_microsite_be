@@ -27,19 +27,23 @@ module.exports = class Mailer {
             from: 'no-reply@qashot.com',
             to: recipient,
             subject: `QAShot.com visual comparison results - ${data.success === true ? 'PASSED' : 'FAILED'}`,
-            // @todo: use data.
             html: resultsMailTemplate({data: data})
         };
-
 
         try {
             const response = await this.transporter.sendMail(mailOptions);
             console.log(`${this.mailerId}:: Email sent: ${response.response}`);
-            return Promise.resolve('Email sent.');
+            return Promise.resolve({
+                code: 200,
+                message: 'Email sent.'
+            });
         }
         catch (error) {
             console.log(`${this.mailerId}:: ${error}`);
-            throw error;
+            return Promise.reject({
+                code: 400,
+                message: error.message
+            });
         }
     }
 
