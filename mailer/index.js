@@ -57,10 +57,7 @@ app.use(express.json({
     strict: true
 }));
 
-app.get('/', function (req, res) {
-    return res.status(200).json({ message: 'Microsite mailer reporting in.'});
-});
-
+app.use('/', require('./src/route'));
 
 let server = undefined;
 
