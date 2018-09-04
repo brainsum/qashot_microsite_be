@@ -27,7 +27,8 @@ module.exports = {
         uuid: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         newsletter: {
             type: DataTypes.BOOLEAN,
