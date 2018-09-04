@@ -13,7 +13,8 @@ module.exports = {
         uuid: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         sentAt: {
             type: DataTypes.DATE,
@@ -22,6 +23,10 @@ module.exports = {
         },
         status: {
             type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        message: {
+            type: DataTypes.TEXT,
             allowNull: false
         }
     },

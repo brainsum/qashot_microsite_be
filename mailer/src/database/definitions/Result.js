@@ -13,7 +13,8 @@ module.exports = {
         uuid: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         receivedAt: {
             type: DataTypes.DATE,
