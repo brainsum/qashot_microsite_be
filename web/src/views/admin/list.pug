@@ -1,38 +1,68 @@
-//- users.pug
+doctype html
+html(lang='en')
+    head
+        title Admin | QAShot Microsite
 
-h1 Tests
+        meta(charset="utf-8")
 
-////- this will simply generate a link to sort by name
-////- note how we only have to pass the querystring param
-////- that we want to modify here, not the entire querystring
-//a(href=paginate.href({ sort: 'name' })) Sort by name
-//
-////- this assumes you have `?age=1` or `?age=-1` in the querystring
-////- so this will basically negate the value and give you
-////- the opposite sorting order (desc with -1 or asc with 1)
-//a(href=paginate.href({ sort: req.query.age === '1' ? -1 : 1 })) Sort by age
+        link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous")
 
-table
-    thead
-        tr
-            th="Id"
-            th="Email address"
-            th="Newsletter"
-            th="Requested at"
-            th="Email sent"
-            th="Results ZIP"
-            th="Reference URL"
-            th="Test URL"
-    tbody
-        each test in tests
-            tr
-                td= test.id
-                td= test.email
-                td= test.newsletter
-                td= test.createdAt
-                td= "n/a"
-                td= "n/a"
-                td= test.reference_url
-                td= test.test_url
+        script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous")
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous")
 
-include _paginate
+    body
+        h1 Tests
+        table
+            thead
+                tr
+                    th="Id"
+                    th="Email address"
+                    th="Newsletter"
+                    th="Reference URL"
+                    th="Test URL"
+                    th="Requested at"
+                    //th="Results received at"
+                    th="Email sent at"
+                    th="Email send status"
+                    th="Results"
+            tbody
+                each test in tests
+                    tr
+                        td= test.id
+                        td= test.email
+                        if test.newsletter === true
+                            td= "Accepted"
+                        else
+                            td= "Declined"
+                        td
+                            a(href=test.reference_url) #{test.reference_url}
+                        td
+                            a(href=test.test_url) #{test.test_url}
+                        td= moment(test.createdAt).format('YYYY-MM-DD hh:mm:ss Z')
+
+                        //if test.resultsReceivedAt
+                        //    td= moment(test.resultsReceivedAt).format('YYYY-MM-DD hh:mm:ss Z')
+                        //else
+                        //    td= "n/a"
+
+                        if test.emailSentAt
+                            td= moment(test.emailSentSuccess).format('YYYY-MM-DD hh:mm:ss Z')
+                        else
+                            td= "Unavailable"
+
+                        if test.emailSentStatus
+                            if test.emailSentStatus === true
+                                td= "Succeeded"
+                            else
+                                td= "Failed"
+                        else
+                            td= "Unavailable"
+
+                        if test.results_url
+                            td
+                                a(href=test.results_url) #{test.results_url}
+                        else
+                            td= "Unavailable"
+
+        include _paginate
