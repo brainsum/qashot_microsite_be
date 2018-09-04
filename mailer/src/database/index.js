@@ -1,6 +1,7 @@
 'use strict';
 
 const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const connection = new Sequelize('mailer_db', process.env.DB_USER, process.env.DB_PASSWORD, {
     host: 'mailer_db',
     dialect: 'postgres',
@@ -39,5 +40,6 @@ for (const name in definitions) {
 
 module.exports = {
     connection,
-    models
+    models,
+    Op
 };
