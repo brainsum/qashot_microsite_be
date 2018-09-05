@@ -43,7 +43,7 @@ function generateBackstopConfig(test) {
         {
             label: 'QAShot visual comparison',
             referenceUrl: test.reference_url,
-            url: test.url,
+            url: test.test_url,
             "readyEvent": null,
             "delay": 5000,
             "misMatchThreshold": 0,
