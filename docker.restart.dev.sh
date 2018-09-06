@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-./docker.shutdown.sh
+./docker.shutdown.dev.sh
 ./docker.startup.dev.sh

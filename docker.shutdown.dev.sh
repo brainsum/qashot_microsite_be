@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml stop
+COMPOSE_FILES="-f docker-compose.yml -f docker-compose.dev.yml"
+
+docker-compose ${COMPOSE_FILES} stop
