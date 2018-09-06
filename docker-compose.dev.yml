@@ -37,6 +37,11 @@ services:
   mailer_db:
     restart: "no"
 
+  redis_rate_limiter:
+    restart: "no"
+    environment:
+    - "ALLOW_EMPTY_PASSWORD=yes"
+
   adminer:
     image: adminer:4.6.3-standalone
     container_name: "${PROJECT_NAME}_adminer"

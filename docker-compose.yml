@@ -13,13 +13,16 @@ services:
     - "DB_USER=${WEB_DB_USER}"
     - "DB_PASSWORD=${WEB_DB_PASSWORD}"
     - "PROJECT_ENVIRONMENT=production"
+    - "RATE_LIMITER_PASSWORD=${RATE_LIMITER_PASSWORD}"
     restart: on-failure
     depends_on:
     - web_db
+    - redis_rate_limiter
     networks:
     - frontend
     - backend
     - web_database
+    - web_rate_limiter
     labels:
     - "traefik.enable=true"
     - "traefik.backend=web"
@@ -86,6 +89,22 @@ services:
     labels:
     - "traefik.enable=false"
 
+  # Note: Probably not needed, but:
+  # https://github.com/bitnami/bitnami-docker-redis#setting-up-a-replication
+  redis_rate_limiter:
+    image: bitnami/redis:4.0.11
+    container_name: "${PROJECT_NAME}_redis_rate_limiter"
+    restart: on-failure
+    environment:
+    - "REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL"
+    - "REDIS_PASSWORD=${RATE_LIMITER_PASSWORD}"
+    networks:
+    - web_rate_limiter
+    volumes:
+    - redis_rate_limiter_data:/bitnami/redis
+    labels:
+    - "traefik.enable=false"
+
   # Other.
   traefik:
     image: traefik:v1.6.6
@@ -109,7 +128,9 @@ networks:
   backend: {}
   mailer_database: {}
   web_database: {}
+  web_rate_limiter: {}
 
 volumes:
   mailer_db_data: {}
   web_db_data: {}
+  redis_rate_limiter_data: {}
