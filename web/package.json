@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "artillery": "artillery run test/artillery/basic-get.yml"
   },
   "repository": {
     "type": "git",
@@ -34,13 +35,16 @@
     "express-async-handler": "^1.1.4",
     "express-jwt": "^5.3.1",
     "express-paginate": "^1.0.0",
+    "express-rate-limit": "^3.1.0",
     "express-robots-txt": "^0.4.0",
     "helmet": "^3.13.0",
+    "ioredis": "^4.0.0",
     "jsonschema": "^1.2.4",
     "moment": "^2.22.2",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.3",
+    "rate-limit-redis": "^1.5.0",
     "request": "^2.88.0",
     "sequelize": "^4.38.0",
     "tsscmp": "^1.0.6"
@@ -56,6 +60,7 @@
     "@types/pug": "^2.0.4",
     "@types/request": "^2.47.1",
     "@types/sequelize": "^4.27.24",
+    "artillery": "^1.6.0-23",
     "eslint": "^5.4.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-security": "^1.4.0",
