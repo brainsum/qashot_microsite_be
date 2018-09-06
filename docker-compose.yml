@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-    image: brainsum/qashot_microsite_backend_web:v0.1.0
+    image: brainsum/qashot_microsite_backend_web:v0.5.0
     container_name: "${PROJECT_NAME}_web"
     environment:
     - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
