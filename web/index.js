@@ -31,6 +31,7 @@ const path = require('path');
 // Contrib.
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const terminus = require('@godaddy/terminus');
 const robots = require('express-robots-txt');
 // Custom.
@@ -55,7 +56,10 @@ app.use(helmet());
 app.use(express.json({
     strict: true
 }));
-
+// @todo: @fixme: Don't allow all.
+app.use(cors({
+    origin: '*'
+}));
 app.use(requestLog);
 
 app.get('/', function (req, res) {
