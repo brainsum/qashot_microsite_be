@@ -26,7 +26,7 @@ function sendToWorker(payload) {
 
 function generateBackstopConfig(test) {
     let backstopConfig = {};
-    backstopConfig.id = test.id;
+    backstopConfig.id = test.uuid;
     backstopConfig.viewports = [
         {
             name: 'Full HD',
