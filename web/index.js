@@ -9,7 +9,8 @@ function preFlightCheck() {
         'ADMIN_PASS',
         'DB_USER',
         'DB_PASSWORD',
-        'PROJECT_ENVIRONMENT'
+        'PROJECT_ENVIRONMENT',
+        'RATE_LIMITER_PASSWORD'
     ];
 
     let success = true;
@@ -32,6 +33,7 @@ const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const rateLimiter = require('./src/middleware/rate-limiter');
 const terminus = require('@godaddy/terminus');
 const robots = require('express-robots-txt');
 // Custom.
@@ -60,6 +62,7 @@ app.use(express.json({
 app.use(cors({
     origin: '*'
 }));
+app.use(rateLimiter);
 app.use(requestLog);
 
 app.get('/', function (req, res) {
