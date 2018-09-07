@@ -41,9 +41,9 @@ const loop = async function loop() {
         return await loop();
     }
 
-    let test = undefined;
+    let webResponse = undefined;
     try {
-        test = await web.getTest(item.uuid);
+        webResponse = await web.getTest(item.uuid);
     }
     catch (error) {
         console.error(error);
@@ -51,6 +51,13 @@ const loop = async function loop() {
         return loop();
     }
 
+    if ('undefined' === webResponse.test) {
+        console.error('The web service did not return a test.');
+        await delay(3000);
+        return loop();
+    }
+
+    const test = webResponse.test;
     let updatedItem = item.get({ plain: true });
     let response = undefined;
     try {
