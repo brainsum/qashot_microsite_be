@@ -38,7 +38,7 @@ module.exports = {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW
-        },
+        }
     },
     options: {
         timestamps: false
