@@ -7,7 +7,7 @@ const asyncHandler = require('express-async-handler');
 const validator = require('jsonschema');
 const schemaLoader = require('../lib/schema-loader');
 const db = require('../database');
-const worker = require('../lib/qashot-worker');
+const queue = require('../client/queue');
 
 let testAddSchema = undefined;
 const emailLimit = 20;
@@ -88,9 +88,16 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         });
     }
 
-    // @todo: On remote failure? Another service that only reads+posts? Or what?
-    const message = worker.addTest(newTest);
-    console.log(message);
+    try {
+        const message = await queue.addTest(newTest);
+        console.log(message);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: 'Could not add the test to the queue.'
+        });
+    }
 
     return res.status(200).json({
         message: 'Created.',
