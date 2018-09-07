@@ -62,6 +62,7 @@ services:
     - "PROJECT_ENVIRONMENT=production"
     restart: on-failure
     depends_on:
+    - web
     - mailer_db
     networks:
     - backend
@@ -86,6 +87,46 @@ services:
     - mailer_db_data:/bitnami
     networks:
     - mailer_database
+    labels:
+    - "traefik.enable=false"
+
+  queue:
+    image: brainsum/qashot_microsite_backend_queue:v0.1.0
+    container_name: "${PROJECT_NAME}_queue"
+    environment:
+    - "WORKER_URL=${WORKER_URL}"
+    - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
+    - "EXPOSED_PORT=${QUEUE_EXPOSED_PORT}"
+    - "DB_USER=${QUEUE_DB_USER}"
+    - "DB_PASSWORD=${QUEUE_DB_PASSWORD}"
+    - "PROJECT_ENVIRONMENT=production"
+    restart: on-failure
+    depends_on:
+    - web
+    - queue_db
+    networks:
+    - backend
+    - queue_database
+    labels:
+    - "traefik.enable=false"
+    - "traefik.backend=queue"
+    - "traefik.frontend.rule=Host:queue.${PROJECT_BASE_URL}"
+    - "traefik.port=${QUEUE_EXPOSED_PORT}"
+    - "traefik.docker.network=${PROJECT_NAME}_backend"
+
+  queue_db:
+    image: bitnami/postgresql:10.5.0
+    container_name: "${PROJECT_NAME}_queue_db"
+    stop_grace_period: 10s
+    restart: on-failure
+    environment:
+    - "POSTGRESQL_USERNAME=${QUEUE_DB_USER}"
+    - "POSTGRESQL_PASSWORD=${QUEUE_DB_PASSWORD}"
+    - "POSTGRESQL_DATABASE=queue_db"
+    volumes:
+    - queue_db_data:/bitnami
+    networks:
+    - queue_database
     labels:
     - "traefik.enable=false"
 
@@ -117,6 +158,8 @@ services:
     - backend
     - mailer_database
     - web_database
+    - queue_database
+    - web_rate_limiter
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - ./traefik/traefik.toml:/etc/traefik/traefik.toml
@@ -128,9 +171,11 @@ networks:
   backend: {}
   mailer_database: {}
   web_database: {}
+  queue_database: {}
   web_rate_limiter: {}
 
 volumes:
   mailer_db_data: {}
   web_db_data: {}
+  queue_db_data: {}
   redis_rate_limiter_data: {}

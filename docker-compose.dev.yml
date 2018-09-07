@@ -31,10 +31,29 @@ services:
     labels:
     - "traefik.enable=true"
 
+  queue:
+    build:
+      context: ./queue
+      args:
+      - "EXPOSED_PORT=${QUEUE_EXPOSED_PORT}"
+    command: ["nodemon", "index.js"]
+    environment:
+    - "NODE_ENV=development"
+    - "DEBUG='express:*'"
+    - "PROJECT_ENVIRONMENT=development"
+    volumes:
+    - ./queue:/home/node/app
+    restart: "no"
+    labels:
+    - "traefik.enable=true"
+
   web_db:
     restart: "no"
 
   mailer_db:
+    restart: "no"
+
+  queue_db:
     restart: "no"
 
   redis_rate_limiter:
@@ -52,9 +71,11 @@ services:
     depends_on:
     - web_db
     - mailer_db
+    - queue_db
     networks:
     - mailer_database
     - web_database
+    - queue_database
     labels:
     - "traefik.enable=true"
     - "traefik.backend=adminer"
