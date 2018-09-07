@@ -3,7 +3,7 @@
 const WORKER_URL = process.env.WORKER_URL;
 const ADD_ENDPOINT = `${WORKER_URL}/api/v1/test/add`;
 
-const request = require('request');
+const request = require('request-promise-native');
 
 function sendToWorker(payload) {
     const reqConfig = {
@@ -11,17 +11,22 @@ function sendToWorker(payload) {
         json: payload
     };
 
-    request.post(reqConfig, function (err, httpResponse, body) {
-        if (err) {
-            console.error(`Sending the test to the worker failed. Error: ${err}`);
-        }
-
-        const { inspect } = require('util');
-        console.log('httpResponse:');
-        console.log(inspect(httpResponse));
-        console.log('body:');
-        console.log(inspect(body));
-    })
+    return request.post(reqConfig)
+        .then(function (response) {
+            return Promise.resolve({
+                code: 200,
+                message: 'Ok.',
+                response: response
+            });
+        })
+        .catch(function (error) {
+            console.error(`Sending the test to the worker failed. Error: ${error}`);
+            return Promise.reject({
+                code: error.statusCode,
+                message: `Remote worker: ${error.message}`,
+                error: error
+            });
+        });
 }
 
 function generateBackstopConfig(test) {
@@ -82,7 +87,7 @@ async function addTest(test) {
         test_config: generateBackstopConfig(test)
     };
 
-    sendToWorker(payload);
+    return await sendToWorker(payload);
 }
 
 module.exports = {
