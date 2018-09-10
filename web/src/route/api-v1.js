@@ -8,6 +8,7 @@ const validator = require('jsonschema');
 const schemaLoader = require('../lib/schema-loader');
 const db = require('../database');
 const queue = require('../client/queue');
+const mailer = require('../client/mailer');
 
 let testAddSchema = undefined;
 const emailLimit = 20;
@@ -96,6 +97,17 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         console.error(error);
         return res.status(500).json({
             message: 'Could not add the test to the queue.'
+        });
+    }
+
+    try {
+        const message = await mailer.addListener(newTest);
+        console.log(message);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: 'Could not add listener for the test.'
         });
     }
 
