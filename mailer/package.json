@@ -38,6 +38,7 @@
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.3",
     "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
     "sequelize": "^4.38.0"
   },
   "devDependencies": {
