@@ -99,7 +99,7 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         });
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
         message: 'Created.',
         test: newTest
     });
