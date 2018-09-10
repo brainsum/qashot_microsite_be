@@ -2,7 +2,7 @@
 
 function preFlightCheck() {
     const requiredEnvVars = [
-        'RESULTS_RABBITMQ_URL',
+        'WORKER_URL',
         'JWT_SECRET_KEY',
         'EXPOSED_PORT',
         'DB_USER',
@@ -45,7 +45,6 @@ const terminus = require('@godaddy/terminus');
 const robots = require('express-robots-txt');
 // Custom.
 const db = require('./src/database');
-const resultsQueue = require('./src/message-queue').ResultsQueue;
 const resultsProcessor = require('./src/lib/results-processor');
 
 // App
@@ -138,18 +137,6 @@ async function run() {
         await delay(timeout);
         return await run();
     }
-
-    // @todo: Re-enable when the queue is ready for connections.
-    // await resultsQueue.connect();
-    //
-    // try {
-    //     const message = await resultsQueue.waitChannels(5, 2000);
-    //     console.log(message);
-    // }
-    // catch (error) {
-    //     console.log(`Error! ${error.message}`);
-    //     // @todo: Exit 1.
-    // }
 
     const PORT = Number(process.env.EXPOSED_PORT);
     const HOST = '0.0.0.0';
