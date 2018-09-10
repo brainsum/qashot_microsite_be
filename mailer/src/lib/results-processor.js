@@ -20,21 +20,38 @@ const ResultModel = db.models.Result;
 
 async function storeResults(results) {
     const uuid = results.original_request.uuid;
-
-    let storedResults = undefined;
     try {
-        storedResults = await ResultModel.create({
-            uuid: uuid,
+        let update = await ResultModel.update({
             received: true,
             receivedAt: new Date(),
             rawData: results
+        }, {
+            where: {
+                uuid: uuid
+            }
         });
     }
     catch (error) {
         return Promise.reject(error);
     }
 
-    return Promise.resolve(storedResults.get({ plain: true }), true);
+    let storedResults = undefined;
+    try {
+        storedResults = await ResultModel.findOne({
+            where: {
+                uuid: uuid
+            }
+        });
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+
+    if (null === storedResults) {
+        return Promise.reject(`The results for uuid ${uuid} were not found.`);
+    }
+
+    return Promise.resolve(storedResults.get({ plain: true }));
 }
 
 async function getTestData(uuid) {
@@ -76,7 +93,6 @@ async function sendEmail(results) {
         reference_url: testData.reference_url,
         test_url: testData.test_url,
         success: results.rawData.metadata.success,
-        // @todo: get results url from results.
         results_url: results.rawData.resultsUrl,
         results_removal_date: `${testEndDate.getDay()} ${formatter.format(testEndDate.getMonth())}, ${testEndDate.getFullYear()}`,
     };
@@ -148,12 +164,13 @@ async function fetchResult() {
     }
 
     const result = response.results;
+    const resultUuids = Object.keys(result);
 
-    if (null === result || 'undefined' === typeof result || Object.keys(result).length === 0) {
+    if (null === result || 'undefined' === typeof result || resultUuids.length === 0) {
         return Promise.reject(`Test results not yet ready (uuid: ${test.uuid}).`);
     }
 
-    return Promise.resolve(result);
+    return Promise.resolve(result[resultUuids[0]].data);
 }
 
 function loop() {

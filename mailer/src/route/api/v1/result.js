@@ -24,7 +24,6 @@ router.post('/add-listener', asyncHandler(async function (req, res, next) {
         });
     }
 
-
     let storedResults = undefined;
     try {
         storedResults = await ResultModel.create({
