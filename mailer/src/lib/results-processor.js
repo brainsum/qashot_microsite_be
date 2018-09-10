@@ -46,16 +46,6 @@ async function getTestData(uuid) {
         json: { uuid: uuid }
     };
 
-    // @todo: Remove this.
-    if (process.env.NODE_ENV === 'development') {
-        // On dev, for testing, add dummy data.
-        return Promise.resolve({
-            reference_url: 'http://www.google.com',
-            test_url: 'http://www.google.hu',
-            email: `user+${uuid}@example.com`
-        });
-    }
-
     return new Promise((resolve, reject) => {
         request.post(requestConfig, function (err, httpResponse, body) {
             if (err) {
@@ -66,7 +56,6 @@ async function getTestData(uuid) {
             return resolve(body.test);
         });
     });
-
 }
 
 async function sendEmail(results) {
