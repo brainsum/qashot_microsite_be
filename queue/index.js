@@ -8,7 +8,7 @@ function preFlightCheck() {
         'DB_USER',
         'DB_PASSWORD',
         'PROJECT_ENVIRONMENT',
-        'MICROSITE_ORIGIN_ID'
+        'ORIGIN_ID'
     ];
 
     let success = true;

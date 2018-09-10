@@ -12,7 +12,7 @@ function preFlightCheck() {
         'MAILER_USER',
         'MAILER_PASS',
         'PROJECT_ENVIRONMENT',
-        'MICROSITE_ORIGIN_ID'
+        'ORIGIN_ID'
     ];
 
     let success = true;

@@ -11,7 +11,7 @@ function preFlightCheck() {
         'DB_PASSWORD',
         'PROJECT_ENVIRONMENT',
         'RATE_LIMITER_PASSWORD',
-        'MICROSITE_ORIGIN_ID'
+        'ORIGIN_ID'
     ];
 
     let success = true;
