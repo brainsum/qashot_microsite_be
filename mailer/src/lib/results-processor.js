@@ -150,7 +150,7 @@ async function fetchResult() {
     const result = response.results;
 
     if (null === result || 'undefined' === typeof result || Object.keys(result).length === 0) {
-        return Promise.reject('Test results not yet ready.');
+        return Promise.reject(`Test results not yet ready (uuid: ${test.uuid}).`);
     }
 
     return Promise.resolve(result);
