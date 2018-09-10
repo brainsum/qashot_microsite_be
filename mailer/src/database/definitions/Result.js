@@ -12,14 +12,17 @@ module.exports = {
         },
         uuid: {
             type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
             allowNull: false,
             unique: true
         },
+        received: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        },
         receivedAt: {
             type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW
+            allowNull: true
         },
         rawData: {
             type: DataTypes.JSONB,
