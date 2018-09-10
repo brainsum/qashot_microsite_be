@@ -7,7 +7,8 @@ function preFlightCheck() {
         'WORKER_URL',
         'DB_USER',
         'DB_PASSWORD',
-        'PROJECT_ENVIRONMENT'
+        'PROJECT_ENVIRONMENT',
+        'MICROSITE_ORIGIN_ID'
     ];
 
     let success = true;

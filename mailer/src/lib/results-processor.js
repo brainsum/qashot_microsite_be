@@ -119,6 +119,10 @@ async function storeEmail(result) {
     return Promise.resolve(storedNotification.get({ plain: true }), true);
 }
 
+async function fetchResult() {
+
+}
+
 function loop() {
     console.time('resultsProcessorLoop');
     ResultsQueue.read(currentChannel.name).then(results => {
