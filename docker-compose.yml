@@ -51,7 +51,7 @@ services:
     image: brainsum/qashot_microsite_backend_mailer:v0.1.0
     container_name: "${PROJECT_NAME}_mailer"
     environment:
-    - "RESULTS_RABBITMQ_URL=${RESULTS_RABBITMQ_URL}"
+    - "WORKER_URL=${WORKER_URL}"
     - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
     - "EXPOSED_PORT=${MAILER_EXPOSED_PORT}"
     - "DB_USER=${MAILER_DB_USER}"
