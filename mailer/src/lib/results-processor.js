@@ -139,15 +139,21 @@ async function fetchResult() {
         return Promise.reject(error);
     }
 
-    let result = undefined;
+    let response = undefined;
     try {
-        result = await resultsClient.getResult(test.uuid);
+        response = await resultsClient.getResult(test.uuid);
     }
     catch (error) {
         return Promise.reject(error);
     }
 
-    return result;
+    const result = response.results;
+
+    if (null === result || 'undefined' === typeof result || Object.keys(result).length === 0) {
+        return Promise.reject('Test results not yet ready.');
+    }
+
+    return Promise.resolve(result);
 }
 
 function loop() {
@@ -161,10 +167,6 @@ function loop() {
         .then(result => {
             return storeEmail(result);
         })
-        // .then(function () {
-        //     console.log('waiting a bit, dummy request');
-        //     return delay(timeout + 50000);
-        // })
         .then(function restartResultsLoop() {
             console.timeEnd('resultsProcessorLoop');
             loop();
