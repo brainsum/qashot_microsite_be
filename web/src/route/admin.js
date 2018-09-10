@@ -110,7 +110,7 @@ adminRouter.get('/list', asyncHandler(async function (req, res, next) {
     // Merge tests with external data.
     tests.forEach(function (test, index) {
         if ('undefined' !== typeof results && results.hasOwnProperty(test.uuid) && 'undefined' !== results[test.uuid]) {
-            tests[index].results_url = results[test.uuid].resultsUrl;
+            tests[index].results_url = results[test.uuid].rawData.resultsUrl;
             tests[index].resultsReceivedAt = results[test.uuid].receivedAt;
             tests[index].emailSentAt = results[test.uuid].emailSentAt;
         }
