@@ -72,7 +72,7 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     }
 
     if (existingTests >= emailLimit) {
-        return res.status(500).json({
+        return res.status(400).json({
             message: `Test limit of ${emailLimit} reached for email ${data.email}.`
         });
     }
