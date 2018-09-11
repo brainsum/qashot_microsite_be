@@ -78,7 +78,7 @@ function generateBackstopConfig(test) {
 
 async function addTest(test) {
     const payload = {
-        browser: 'firefox',
+        browser: 'chrome',
         mode: 'a_b',
         stage: '',
         uuid: test.uuid,
