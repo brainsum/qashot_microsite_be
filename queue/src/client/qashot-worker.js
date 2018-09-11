@@ -64,7 +64,7 @@ function generateBackstopConfig(test) {
     backstopConfig.resembleOutputOptions = {
         "errorColor": {
             "red": 255,
-            "green": 255,
+            "green": 0,
             "blue": 255
         },
         "errorType": "movement",
