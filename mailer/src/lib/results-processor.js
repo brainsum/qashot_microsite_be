@@ -126,12 +126,18 @@ async function storeEmail(result) {
     return Promise.resolve(storedNotification.get({ plain: true }), true);
 }
 
-async function getTest() {
+async function getTestResult() {
     let test = undefined;
     try {
         test = await ResultModel.findOne({
             where: {
-                received: false
+                received: false,
+                waitUntil: {
+                    [db.Op.or]: {
+                        [db.Op.is]: null,
+                        [db.Op.lt]: new Date()
+                    }
+                }
             }
         });
     }
@@ -146,10 +152,25 @@ async function getTest() {
     return Promise.resolve(test.get({ plain: true }));
 }
 
-async function fetchResult() {
-    let test = undefined;
+async function updateTestResult(result) {
+    let update = undefined;
     try {
-        test = await getTest();
+        update = ResultModel.update(result, {
+            where: {
+                uuid: result.uuid
+            }
+        });
+        return Promise.resolve(`Results for ${result.uuid} have been updated.`);
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+async function fetchResult() {
+    let testResult = undefined;
+    try {
+        testResult = await getTestResult();
     }
     catch (error) {
         return Promise.reject(error);
@@ -157,20 +178,26 @@ async function fetchResult() {
 
     let response = undefined;
     try {
-        response = await resultsClient.getResult(test.uuid);
+        response = await resultsClient.getResult(testResult.uuid);
     }
     catch (error) {
         return Promise.reject(error);
     }
 
-    const result = response.results;
-    const resultUuids = Object.keys(result);
-
-    if (null === result || 'undefined' === typeof result || resultUuids.length === 0) {
-        return Promise.reject(`Test results not yet ready (uuid: ${test.uuid}).`);
+    const results = response.results;
+    const resultUuids = Object.keys(results);
+    if (null === results || 'undefined' === typeof results || resultUuids.length === 0) {
+        testResult.waitUntil = new Date(Date.now() + (1000 * 30));
+        let updateResult = await updateTestResult(testResult);
+        return Promise.reject(`Test results not yet ready (uuid: ${testResult.uuid}).`);
     }
 
-    return Promise.resolve(result[resultUuids[0]].data);
+    // results[resultUuids[0]].createdAt
+    // results[resultUuids[0]].sentAt
+    // @todo: Add results endpoint for fetching a single result, not a bunch of them.
+    // @fixme: @todo: if there are more than one results [shouldn't be the case for microsite]
+    //                we only get one.
+    return Promise.resolve(results[resultUuids[0]].data);
 }
 
 function loop() {

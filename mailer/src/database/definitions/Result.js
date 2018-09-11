@@ -15,6 +15,10 @@ module.exports = {
             allowNull: false,
             unique: true
         },
+        waitUntil: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
         received: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
