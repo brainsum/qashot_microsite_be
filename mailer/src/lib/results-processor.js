@@ -17,6 +17,7 @@ function delay(t, v) {
  * @type {Sequelize.Model}
  */
 const ResultModel = db.models.Result;
+const NotificationModel = db.models.Notification;
 
 async function storeResults(results) {
     const uuid = results.original_request.uuid;
@@ -111,19 +112,28 @@ async function sendEmail(results) {
 
 async function storeEmail(result) {
     let storedNotification = undefined;
+    let stored = undefined;
+
+    const status = 200 <= result.code && result.code < 400;
+
     try {
-        const NotificationModel = db.models.Notification;
-        storedNotification = await NotificationModel.create({
-            uuid: result.uuid,
-            status: 200 <= result.code && result.code < 400,
-            message: result.message
+        [storedNotification, stored] = await NotificationModel.findOrCreate({
+            where: {
+                uuid: result.uuid
+            },
+            defaults: {
+                uuid: result.uuid,
+                status: status,
+                message: result.message || 'Ok.',
+                sentAt: status ? new Date() : null
+            }
         });
     }
     catch (error) {
         return Promise.reject(error);
     }
 
-    return Promise.resolve(storedNotification.get({ plain: true }), true);
+    return Promise.resolve(storedNotification.get({ plain: true }), stored);
 }
 
 async function getTestResult() {
@@ -146,7 +156,7 @@ async function getTestResult() {
     }
 
     if (null === test) {
-        return Promise.reject('There are no result emails waiting to be sent to users.');
+        return Promise.reject('There are no results waiting to be fetched.');
     }
 
     return Promise.resolve(test.get({ plain: true }));
@@ -200,6 +210,81 @@ async function fetchResult() {
     return Promise.resolve(results[resultUuids[0]].data);
 }
 
+async function fetchEmail() {
+    let email = undefined;
+    try {
+        email = await NotificationModel.findOne({
+            where: {
+                status: false,
+                waitUntil: {
+                    [db.Op.or]: {
+                        [db.Op.is]: null,
+                        [db.Op.lt]: new Date()
+                    }
+                }
+            }
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+    }
+
+    if (null === email) {
+        return Promise.reject('There are no emails waiting to be sent to users.')
+    }
+
+    const { inspect } = require('util');
+    console.log(inspect(email));
+
+    return Promise.resolve(email.get({ plain: true }));
+}
+
+async function loadResults(uuid) {
+    let result = undefined;
+    try {
+        result = await ResultModel.findOne({
+            where: {
+                uuid: uuid
+            }
+        });
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+
+    if (null === result) {
+        return Promise.reject(`The are no results for uuid "${uuid}"`);
+    }
+
+    return Promise.resolve(result.get({ plain: true }));
+}
+
+async function updateEmail(result) {
+    let updatedRows = undefined;
+    let updatedCount = undefined;
+
+    const status = 200 <= result.code && result.code < 400;
+
+    try {
+        [updatedCount, updatedRows] = await NotificationModel.update({
+            status: status,
+            message: result.message || 'Ok.',
+            sentAt: status ? new Date() : null,
+            waitUntil: status? null : new Date(Date.now() + (1000 * 30))
+        }, {
+            where: {
+                uuid: result.uuid
+            }
+        });
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+
+    return Promise.resolve(`Update. Rows affected: ${updatedCount}`);
+}
+
 function loop() {
     console.time('resultsProcessorLoop');
     fetchResult().then(results => {
@@ -221,6 +306,23 @@ function loop() {
             return delay(timeout).then(() => {
                 loop();
             });
+        });
+
+    // @todo: Move "fetch results" into a separate service.
+    // @todo: Rename "Results" and "Notification" uuid fields to "testUuid" for clarity.
+    //        Reasoning: For the microsite we don't need to support re-running tests [while keeping every result].
+    // In case there are emails that failed to deliver, send them again.
+    fetchEmail().then(function (mail) {
+        return loadResults(mail.uuid);
+    })
+        .then(results => {
+            return sendEmail(results);
+        })
+        .then(result => {
+            return updateEmail(result);
+        })
+        .catch(function (error) {
+            console.log(error);
         });
 }
 

@@ -16,10 +16,13 @@ module.exports = {
             allowNull: false,
             unique: true
         },
+        waitUntil: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
         sentAt: {
             type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW
+            allowNull: true
         },
         status: {
             type: DataTypes.BOOLEAN,
