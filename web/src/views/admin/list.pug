@@ -51,13 +51,13 @@ html(lang='en')
                         else
                             td= "Unavailable"
 
-                        if test.emailSentStatus
+                        if 'undefined' === typeof test.emailSentStatus || null === test.emailSentStatus
+                            td= "Unavailable"
+                        else
                             if test.emailSentStatus === true
                                 td= "Succeeded"
                             else
                                 td= "Failed"
-                        else
-                            td= "Unavailable"
 
                         if test.results_url
                             td
