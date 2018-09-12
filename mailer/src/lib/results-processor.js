@@ -140,6 +140,10 @@ async function storeEmail(result) {
         return Promise.reject(error);
     }
 
+    if (false === stored) {
+        return updateEmail(result);
+    }
+
     return Promise.resolve(storedNotification.get({ plain: true }), stored);
 }
 
@@ -275,7 +279,7 @@ async function updateEmail(result) {
             status: status,
             message: result.message || 'Ok.',
             sentAt: status ? new Date() : null,
-            waitUntil: status? null : new Date(Date.now() + (1000 * 30))
+            waitUntil: status ? null : new Date(Date.now() + (1000 * 30))
         }, {
             where: {
                 uuid: result.uuid
@@ -362,9 +366,6 @@ function loop() {
     })
         .then(results => {
             return sendEmail(results);
-        })
-        .then(result => {
-            return updateEmail(result);
         })
         .catch(function (error) {
             console.log(error);
