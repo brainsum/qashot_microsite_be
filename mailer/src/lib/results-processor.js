@@ -79,6 +79,10 @@ async function getTestData(uuid) {
 async function sendEmail(results) {
     const uuid = results.uuid;
 
+    if (0 === Object.keys(results.rawData).length || null === results.rawData || 'undefined' === typeof results.rawData) {
+        return Promise.reject(`Results for "${uuid}" are not yet ready.`);
+    }
+
     let testData = undefined;
     try {
         testData = await getTestData(uuid);
@@ -98,16 +102,18 @@ async function sendEmail(results) {
         results_removal_date: `${testEndDate.getDay()} ${formatter.format(testEndDate.getMonth())}, ${testEndDate.getFullYear()}`,
     };
 
+    let mailerResponse = {};
+
     try {
-        let mailData = await ResultsMailer.sendMail(testData.email, templateData);
-        mailData.uuid = uuid;
-        return Promise.resolve(mailData);
+        mailerResponse = await ResultsMailer.sendMail(testData.email, templateData);
     }
     catch (error) {
-        let errorData = error;
-        errorData.uuid = uuid;
-        return Promise.reject(errorData);
+        mailerResponse = error;
     }
+
+    mailerResponse.uuid = uuid;
+
+    return storeEmail(mailerResponse);
 }
 
 async function storeEmail(result) {
@@ -125,7 +131,8 @@ async function storeEmail(result) {
                 uuid: result.uuid,
                 status: status,
                 message: result.message || 'Ok.',
-                sentAt: status ? new Date() : null
+                sentAt: status ? new Date() : null,
+                waitUntil: status ? null : new Date(Date.now() + (1000 * 30))
             }
         });
     }
@@ -234,9 +241,6 @@ async function fetchEmail() {
         return Promise.reject('There are no emails waiting to be sent to users.')
     }
 
-    const { inspect } = require('util');
-    console.log(inspect(email));
-
     return Promise.resolve(email.get({ plain: true }));
 }
 
@@ -285,6 +289,50 @@ async function updateEmail(result) {
     return Promise.resolve(`Update. Rows affected: ${updatedCount}`);
 }
 
+async function bulkCreateNotifications(uuids) {
+    const rows = uuids.map(function (uuid) {
+        return {
+            uuid: uuid,
+            status: false,
+            message: 'Synced from "Results".'
+        };
+    });
+
+    try {
+        const bulkMessage = NotificationModel.bulkCreate(rows);
+        return Promise.resolve('Results synced to Notifications, as they were missing.');
+    }
+    catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+async function syncTables() {
+    let missingUuids = [];
+    try {
+        missingUuids = await db.connection.query(
+            'SELECT "uuid" FROM "Results" WHERE "uuid" NOT IN (SELECT "uuid" FROM "Notifications")', {
+                type: db.connection.QueryTypes.SELECT
+            }
+        );
+    }
+    catch (error) {
+        console.log(error);
+    }
+
+    if (Array.isArray(missingUuids) && missingUuids.length > 0) {
+        console.log(`Syncing notifications (${missingUuids.length}).`);
+
+        const uuids = missingUuids.map(function (row) {
+            return row.uuid;
+        });
+
+        return bulkCreateNotifications(uuids);
+    }
+
+    return Promise.reject('No Result/Notification sync is required.');
+}
+
 function loop() {
     console.time('resultsProcessorLoop');
     fetchResult().then(results => {
@@ -292,9 +340,6 @@ function loop() {
     })
         .then(results => {
             return sendEmail(results);
-        })
-        .then(result => {
-            return storeEmail(result);
         })
         .then(function restartResultsLoop() {
             console.timeEnd('resultsProcessorLoop');
@@ -324,6 +369,13 @@ function loop() {
         .catch(function (error) {
             console.log(error);
         });
+
+    // @todo: This is pretty bad, but until I have time to refactor the service, this has to do.
+    syncTables().then(response => {
+        console.log(response);
+    }).catch(error => {
+        console.log(error);
+    });
 }
 
 module.exports = {
