@@ -72,6 +72,7 @@ services:
     networks:
     - backend
     - mailer_database
+    - smtp_server
     labels:
     - "traefik.enable=false"
     - "traefik.backend=mailer"
@@ -152,6 +153,21 @@ services:
     labels:
     - "traefik.enable=false"
 
+  smtp_server:
+    image: brainsum/qashot_microsite_backend_smtp_server:0.1.0
+    container_name: "${PROJECT_NAME}_smtp_server"
+    restart: on-failure
+    environment:
+    - "NODE_ENV=development"
+    - "PROJECT_ENVIRONMENT=development"
+    - "EXPOSED_PORT=${SMTP_SERVER_EXPOSED_PORT}"
+    - "SERVER_USER=${SMTP_SERVER_USERNAME}"
+    - "SERVER_PASSWORD=${SMTP_SERVER_PASSWORD}"
+    networks:
+    - smtp_server
+    labels:
+    - "traefik.enable=false"
+
   # Other.
   traefik:
     image: traefik:v1.6.6
@@ -166,6 +182,7 @@ services:
     - web_database
     - queue_database
     - web_rate_limiter
+    - smtp_server
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - ./traefik/traefik.toml:/etc/traefik/traefik.toml
@@ -179,6 +196,7 @@ networks:
   web_database: {}
   queue_database: {}
   web_rate_limiter: {}
+  smtp_server: {}
 
 volumes:
   mailer_db_data: {}

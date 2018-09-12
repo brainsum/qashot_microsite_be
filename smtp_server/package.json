@@ -1,0 +1,44 @@
+{
+  "name": "smtp_server",
+  "version": "0.1.0",
+  "description": "SMTP Server for the microsite.",
+  "main": "index.js",
+  "engines": {
+    "node": "10.x",
+    "npm": "6.x"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "lint": "eslint index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brainsum/qashot_microsite_be.git"
+  },
+  "author": "mhavelant",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/brainsum/qashot_microsite_be/issues"
+  },
+  "homepage": "https://github.com/brainsum/qashot_microsite_be#readme",
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules",
+      "tmp",
+      "runtime"
+    ],
+    "delay": "2500"
+  },
+  "dependencies": {
+    "smtp-server": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^10.9.4",
+    "@types/smtp-server": "^3.4.0",
+    "eslint": "^5.5.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-security": "^1.4.0",
+    "nodemon": "^1.18.4"
+  }
+}
