@@ -79,7 +79,7 @@ async function getTestData(uuid) {
 async function sendEmail(results) {
     const uuid = results.uuid;
 
-    if (0 === Object.keys(results.rawData).length || null === results.rawData || 'undefined' === typeof results.rawData) {
+    if (null === results.rawData || 'undefined' === typeof results.rawData || 0 === Object.keys(results.rawData).length) {
         return Promise.reject(`Results for "${uuid}" are not yet ready.`);
     }
 
@@ -89,6 +89,10 @@ async function sendEmail(results) {
     }
     catch (error) {
         throw error;
+    }
+
+    if (null === testData || 'undefined' === typeof testData || 0 === Object.keys(testData).length) {
+        return Promise.reject(`Test (${uuid}) could not be loaded.`);
     }
 
     const testEndDate = new Date(new Date(results.rawData.metadata.duration.full.end).getTime() + 12096e5);
@@ -112,7 +116,6 @@ async function sendEmail(results) {
     }
 
     mailerResponse.uuid = uuid;
-
     return storeEmail(mailerResponse);
 }
 
