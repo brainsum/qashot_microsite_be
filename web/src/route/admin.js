@@ -109,13 +109,23 @@ adminRouter.get('/list', asyncHandler(async function (req, res, next) {
 
     // Merge tests with external data.
     tests.forEach(function (test, index) {
+        tests[index] = test.get({ plain: true });
+        tests[index].createdAtFormatted = ('undefined' === typeof test.createdAt)
+            ? test.createdAt
+            : moment(test.createdAt).format('YYYY-MM-DD hh:mm:ss Z');
+
         if ('undefined' !== typeof results && results.hasOwnProperty(test.uuid) && 'undefined' !== results[test.uuid]) {
             tests[index].results_url = results[test.uuid].rawData.resultsUrl;
             tests[index].resultsReceivedAt = results[test.uuid].receivedAt;
-            tests[index].emailSentAt = results[test.uuid].emailSentAt;
+            tests[index].resultsReceivedAtFormatted = ('undefined' === typeof results[test.uuid].receivedAt)
+                ? results[test.uuid].receivedAt
+                : moment(results[test.uuid].receivedAt).format('YYYY-MM-DD hh:mm:ss Z');
         }
         if ('undefined' !== typeof notifications && notifications.hasOwnProperty(test.uuid) && 'undefined' !== notifications[test.uuid]) {
             tests[index].emailSentAt = notifications[test.uuid].sentAt;
+            tests[index].emailSentAtFormatted = ('undefined' === typeof notifications[test.uuid].sentAt)
+                ? notifications[test.uuid].sentAt
+                : moment(notifications[test.uuid].sentAt).format('YYYY-MM-DD hh:mm:ss Z');
             tests[index].emailSentStatus = notifications[test.uuid].status;
         }
     });
@@ -124,8 +134,7 @@ adminRouter.get('/list', asyncHandler(async function (req, res, next) {
         tests: tests,
         pageCount,
         testCount,
-        pages: paginate.getArrayPages(req)(3, pageCount, req.query.page),
-        moment: moment
+        pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
     });
 }));
 

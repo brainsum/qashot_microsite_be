@@ -22,7 +22,7 @@ html(lang='en')
                     th="Reference URL"
                     th="Test URL"
                     th="Requested at"
-                    //th="Results received at"
+                    th="Results received at"
                     th="Email sent at"
                     th="Email send status"
                     th="Results"
@@ -39,15 +39,15 @@ html(lang='en')
                             a(href=test.reference_url) #{test.reference_url}
                         td
                             a(href=test.test_url) #{test.test_url}
-                        td= moment(test.createdAt).format('YYYY-MM-DD hh:mm:ss Z')
+                        td= test.createdAtFormatted
 
-                        //if test.resultsReceivedAt
-                        //    td= moment(test.resultsReceivedAt).format('YYYY-MM-DD hh:mm:ss Z')
-                        //else
-                        //    td= "n/a"
+                        if test.resultsReceivedAt
+                            td= test.resultsReceivedAtFormatted
+                        else
+                            td= "n/a"
 
                         if test.emailSentAt
-                            td= moment(test.emailSentSuccess).format('YYYY-MM-DD hh:mm:ss Z')
+                            td= test.emailSentAtFormatted
                         else
                             td= "Unavailable"
 
