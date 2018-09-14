@@ -160,11 +160,8 @@ services:
     ports:
     - "1587:587"
     environment:
-    - "HOSTNAME=qashot-microsite"
-    - "ALLOWED_SENDER_DOMAINS=qashot.com"
-#    - "RELAYHOST="
-#    - "RELAYHOST_USERNAME="
-#    - "RELAYHOST_PASSWORD="
+    - "HOSTNAME=${MAIL_SERVER_HOSTNAME}"
+    - "ALLOWED_SENDER_DOMAINS=${MAIL_SERVER_ALLOWED_SENDER_DOMAINS}"
     networks:
     - smtp_server
     labels:
