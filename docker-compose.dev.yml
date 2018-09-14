@@ -83,18 +83,10 @@ services:
     - "traefik.frontend.rule=Host:adminer.${PROJECT_BASE_URL}"
     - "traefik.docker.network=${PROJECT_NAME}_mailer_database"
 
-  smtp_server:
-    build:
-      context: ./smtp_server
-      args:
-      - "EXPOSED_PORT=${SMTP_SERVER_EXPOSED_PORT}"
-    command: ["nodemon", "index.js"]
-    environment:
-    - "NODE_ENV=development"
-    - "PROJECT_ENVIRONMENT=development"
-    volumes:
-    - ./smtp_server:/home/node/app
+  mail_server:
     restart: "no"
+    environment:
+    - "HOSTNAME=qashot-microsite-localhost"
 
   traefik:
     restart: "no"

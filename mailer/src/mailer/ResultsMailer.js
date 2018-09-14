@@ -45,6 +45,14 @@ if ('microsite_smtp_server' === transporter) {
     };
 }
 
+if ('microsite_mail_server' === transporter) {
+    config = {
+        pool: true,
+        host: 'mail_server',
+        port: 1587
+    };
+}
+
 const ResultsMailer = new Mailer('ResultsMailer', config);
 
 module.exports = ResultsMailer;

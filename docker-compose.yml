@@ -153,16 +153,18 @@ services:
     labels:
     - "traefik.enable=false"
 
-  smtp_server:
-    image: brainsum/qashot_microsite_backend_smtp_server:0.1.0
-    container_name: "${PROJECT_NAME}_smtp_server"
+  mail_server:
+    image: boky/postfix
     restart: on-failure
+    container_name: "${PROJECT_NAME}_mail_server"
+    ports:
+    - "1587:587"
     environment:
-    - "NODE_ENV=development"
-    - "PROJECT_ENVIRONMENT=development"
-    - "EXPOSED_PORT=${SMTP_SERVER_EXPOSED_PORT}"
-    - "SERVER_USER=${SMTP_SERVER_USERNAME}"
-    - "SERVER_PASSWORD=${SMTP_SERVER_PASSWORD}"
+    - "HOSTNAME=qashot-microsite"
+    - "ALLOWED_SENDER_DOMAINS=qashot.com"
+#    - "RELAYHOST="
+#    - "RELAYHOST_USERNAME="
+#    - "RELAYHOST_PASSWORD="
     networks:
     - smtp_server
     labels:
