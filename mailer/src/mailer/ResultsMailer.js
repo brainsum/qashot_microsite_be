@@ -49,7 +49,7 @@ if ('microsite_mail_server' === transporter) {
     config = {
         pool: true,
         host: 'mail_server',
-        port: 1587
+        port: 587
     };
 }
 
