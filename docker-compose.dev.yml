@@ -88,6 +88,18 @@ services:
     environment:
     - "HOSTNAME=qashot-microsite-localhost"
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: "${PROJECT_NAME}_mailhog"
+    networks:
+    - smtp_server
+    labels:
+    - "traefik.enable=true"
+    - "traefik.backend=mailhog"
+    - "traefik.port=8025"
+    - "traefik.frontend.rule=Host:mailhog.${PROJECT_BASE_URL}"
+    - "traefik.docker.network=${PROJECT_NAME}_smtp_server"
+
   traefik:
     restart: "no"
     ports:

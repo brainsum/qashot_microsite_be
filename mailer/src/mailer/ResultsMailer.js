@@ -36,6 +36,14 @@ if ('microsite_mail_server' === transporter) {
     };
 }
 
+if ('mailhog' === transporter) {
+    config = {
+        pool: true,
+        host: 'mailhog',
+        port: 1025
+    };
+}
+
 const ResultsMailer = new Mailer('ResultsMailer', config);
 
 module.exports = ResultsMailer;
