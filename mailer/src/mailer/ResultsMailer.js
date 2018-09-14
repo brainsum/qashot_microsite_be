@@ -28,23 +28,6 @@ if ('mailtrap' === transporter) {
     };
 }
 
-if ('microsite_smtp_server' === transporter) {
-    config = {
-        pool: true,
-        host: process.env.MAILER_HOST,
-        port: Number(process.env.MAILER_PORT),
-        auth: {
-            user: process.env.MAILER_USER,
-            pass: process.env.MAILER_PASS
-        },
-        secure: false,
-        tls: {
-            rejectUnauthorized: false
-        },
-        debug: true
-    };
-}
-
 if ('microsite_mail_server' === transporter) {
     config = {
         pool: true,
