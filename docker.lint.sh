@@ -9,3 +9,9 @@ echo "Linting files with $(./vendor/hadolint --version)"
 
 ./vendor/hadolint ./web/Dockerfile
 echo ""
+
+./vendor/hadolint ./queue/Dockerfile
+echo ""
+
+./vendor/hadolint ./mailer/Dockerfile
+echo ""
