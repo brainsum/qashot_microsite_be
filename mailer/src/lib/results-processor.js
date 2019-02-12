@@ -95,15 +95,11 @@ async function sendEmail(results) {
         return Promise.reject(`Test (${uuid}) could not be loaded.`);
     }
 
-    const testEndDate = new Date(new Date(results.rawData.metadata.duration.full.end).getTime() + 12096e5);
-    const formatter = new Intl.DateTimeFormat('en', {month: 'long'});
-
     const templateData = {
         reference_url: testData.reference_url,
         test_url: testData.test_url,
         success: results.rawData.metadata.success,
         results_url: results.rawData.resultsUrl,
-        results_removal_date: `${testEndDate.getDay()} ${formatter.format(testEndDate.getMonth())}, ${testEndDate.getFullYear()}`,
     };
 
     let mailerResponse = {};
