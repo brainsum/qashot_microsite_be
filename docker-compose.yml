@@ -48,7 +48,7 @@ services:
     - "traefik.enable=false"
 
   mailer:
-    image: brainsum/qashot-microsite-backend-mailer:0.2.0
+    image: brainsum/qashot-microsite-backend-mailer:0.2.1
     container_name: "${PROJECT_NAME}_mailer"
     environment:
     - "WORKER_URL=${WORKER_URL}"
