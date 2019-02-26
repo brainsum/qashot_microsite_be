@@ -11,7 +11,8 @@ const queue = require('../client/queue');
 const mailer = require('../client/mailer');
 
 let testAddSchema = undefined;
-const emailLimit = 20;
+const emailLimit = process.env.TESTS_PER_EMAIL_LIMIT || 20;
+const unrestrictedDomains = loadUnrestrictedDomains();
 
 schemaLoader('test-add-request.json').then(schema => {
     testAddSchema = schema;
@@ -19,6 +20,27 @@ schemaLoader('test-add-request.json').then(schema => {
     .catch(error => {
         console.log(error);
     });
+
+/**
+ * Load unrestricted domains from env.
+ *
+ * @return {string[]}
+ */
+function loadUnrestrictedDomains() {
+    const domains = process.env.EMAIL_LIMIT_EXCLUDED_DOMAINS || '';
+
+    if (domains.trim() === '') {
+        return [];
+    }
+
+    const domainList = domains.trim().split(';');
+
+    if (domainList.length === 1 && domainList[0] === '') {
+        return [];
+    }
+
+    return domainList;
+}
 
 /**
  *
@@ -71,7 +93,12 @@ apiRouter.post('/test/add', asyncHandler(async function (req, res) {
         });
     }
 
-    if (existingTests >= emailLimit) {
+    const emailDomain = data.email.split('@')[1];
+    // @todo: Check for email aliases as well.
+    if (
+        existingTests >= emailLimit
+        && unrestrictedDomains.indexOf(emailDomain) === -1
+    ) {
         return res.status(400).json({
             message: `Test limit of ${emailLimit} reached for email ${data.email}.`
         });
