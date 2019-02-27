@@ -2,7 +2,8 @@
 
 git pull
 
-./docker.build.sh && \
-    ./docker.restart.prod.sh
+./docker.pull-images.sh && \
+    ./docker.stratup.prod.sh && \
+    ./docker.database-migrations.sh
 
 ./docker.cleanup.sh

@@ -6,5 +6,5 @@ COMPOSE_MISC_OPTIONS="-d --remove-orphans"
 docker-compose ${COMPOSE_FILES} up -${COMPOSE_MISC_OPTIONS}
 
 echo "Waiting a bit for services to start up.."
-sleep 4
+sleep 10
 docker-compose ${COMPOSE_FILES} ps
