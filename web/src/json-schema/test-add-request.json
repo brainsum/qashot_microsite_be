@@ -27,6 +27,7 @@
     "reference_url",
     "test_url",
     "newsletter",
-    "email"
+    "email",
+    "privacy_policy"
   ]
 }

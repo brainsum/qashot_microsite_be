@@ -10,16 +10,23 @@ const db = require('../database');
 const queue = require('../client/queue');
 const mailer = require('../client/mailer');
 
-let testAddSchema = undefined;
 const emailLimit = process.env.TESTS_PER_EMAIL_LIMIT || 20;
 const unrestrictedDomains = loadUnrestrictedDomains();
 
-schemaLoader('test-add-request.json').then(schema => {
-    testAddSchema = schema;
-})
-    .catch(error => {
-        console.log(error);
-    });
+/**
+ * Loads the json schema.
+ *
+ * @return {Promise<*>}
+ */
+async function loadTestAddJsonSchema() {
+    try {
+        return await schemaLoader('test-add-request.json');
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+}
 
 /**
  * Load unrestricted domains from env.
@@ -51,6 +58,7 @@ function validateJsonData(data, schema) {
     let errors = {};
 
     const validationResult = validator.validate(data, schema);
+
     if (!validationResult.valid) {
         // @todo: In case of additionalProperty violation, name is undefined.
         validationResult.errors.forEach(function (error) {
@@ -62,12 +70,12 @@ function validateJsonData(data, schema) {
 }
 
 apiRouter.get('/test/add', asyncHandler(async function (req, res) {
-    return res.status(200).json({'schema': testAddSchema});
+    return res.status(200).json({'schema': await loadTestAddJsonSchema()});
 }));
 
 apiRouter.post('/test/add', asyncHandler(async function (req, res) {
     const data = req.body;
-    const validationErrors = validateJsonData(data, testAddSchema);
+    const validationErrors = validateJsonData(data, await loadTestAddJsonSchema());
 
     if (Object.keys(validationErrors).length > 0) {
         return res.status(400).json({
