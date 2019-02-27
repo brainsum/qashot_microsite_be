@@ -11,6 +11,9 @@
       "format": "uri"
     },
     "newsletter": {
+      "type": "boolean"
+    },
+    "privacy_policy": {
       "type": "boolean",
       "enum": [ true ]
     },
