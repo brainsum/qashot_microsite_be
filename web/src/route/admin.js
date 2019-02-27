@@ -68,12 +68,12 @@ async function getNotifications(uuids) {
 
 
 adminRouter.get('/list', asyncHandler(async function (req, res, next) {
-    const Test = db.models.Test;
+    const Tests = db.models.Tests;
 
     let testResults = undefined;
 
     try {
-        testResults = await Test.findAndCountAll({limit: req.query.limit, offset: req.skip});
+        testResults = await Tests.findAndCountAll({limit: req.query.limit, offset: req.skip});
     }
     catch (error) {
         return res.status(500).send(error);
