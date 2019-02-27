@@ -1,20 +1,21 @@
 'use strict';
 
+// Db is configured via env, use production key just because.
+const dbConfig = require('../../config/database').production;
 const Sequelize = require('sequelize');
-const connection = new Sequelize('web_db', process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: 'web_db',
-    dialect: 'postgres',
+const connection = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    {
+        host: dbConfig.host,
+        dialect: dbConfig.dialect,
+        pool: dbConfig.pool,
 
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-
-    // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-    operatorsAliases: false
-});
+        // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
+        operatorsAliases: dbConfig.operatorsAliases
+    }
+);
 
 async function checkConnection() {
     try {
