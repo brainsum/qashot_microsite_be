@@ -28,7 +28,6 @@
   "homepage": "https://github.com/brainsum/qashot_microsite_be#readme",
   "dependencies": {
     "@godaddy/terminus": "^2.4.1",
-    "amqplib": "^0.5.2",
     "basic-auth": "^2.0.0",
     "cors": "^2.8.4",
     "express": "^4.16.3",
