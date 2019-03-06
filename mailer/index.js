@@ -41,7 +41,7 @@ const path = require('path');
 // Contrib.
 const express = require('express');
 const helmet = require('helmet');
-const terminus = require('@godaddy/terminus');
+const { createTerminus } = require('@godaddy/terminus');
 const robots = require('express-robots-txt');
 // Custom.
 const db = require('./src/database');
@@ -143,7 +143,7 @@ async function run() {
     console.log('Setting the server..');
     server = app.listen(PORT, HOST, function () {
         console.log(`Running on http://${HOST}:${PORT}`);
-        terminus(server, terminusOptions);
+        createTerminus(server, terminusOptions);
     });
 
     resultsProcessor.loop();
