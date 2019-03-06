@@ -5,22 +5,22 @@
 //- See: https://github.com/expressjs/express-paginate
 
 if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
-    .navigation.well-sm#pagination
-        ul.pager
+    nav(aria-label="Pager")
+        ul.pagination
             if paginate.hasPreviousPages
-                li.first
-                    a(href=pages[firstPageIndex].url).first «&nbsp;First
+                li.first.page-item
+                    a.page-link(href=pages[firstPageIndex].url).page-item.first-page-item «&nbsp;First
 
-                li.previous
-                    a(href=paginate.href(true)).prev ‹&nbsp;Previous
+                li.previous.page-item
+                    a.page-link(href=paginate.href(true)).page-item.prev-page-item ‹&nbsp;Previous
 
             if pages
                 each page in pages
-                    a.btn.btn-default(href=page.url)= page.number
+                    a.page-link(href=page.url)= page.number
 
             if paginate.hasNextPages(pageCount)
                 li.next
-                    a(href=paginate.href()).next Next&nbsp;›
+                    a.page-link(href=paginate.href()).page-item.next-page-item Next&nbsp;›
 
                 li.last
-                    a(href=pages[lastPageIndex].url).last Last&nbsp;»
+                    a.page-link(href=pages[lastPageIndex].url).page-item.last-page-item Last&nbsp;»

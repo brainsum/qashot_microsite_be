@@ -12,62 +12,64 @@ html(lang='en')
         script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous")
 
     body
-        h1 Tests
+        div.container-fluid
+            h1 Tests
 
-        p Currently, there are
-            strong  #{testCount}
-            |  tests in the system.
+            p Currently, there are
+                strong  #{testCount}
+                |  tests in the system.
 
-        table
-            thead
-                tr
-                    th="Id"
-                    th="Email address"
-                    th="Newsletter"
-                    th="Reference URL"
-                    th="Test URL"
-                    th="Requested at"
-                    th="Results received at"
-                    th="Email sent at"
-                    th="Email send status"
-                    th="Results"
-            tbody
-                each test in tests
-                    tr
-                        td= test.id
-                        td= test.email
-                        if test.newsletter === true
-                            td= "Accepted"
-                        else
-                            td= "Declined"
-                        td
-                            a(href=test.reference_url) #{test.reference_url}
-                        td
-                            a(href=test.test_url) #{test.test_url}
-                        td= test.createdAtFormatted
+            div.table-responsive
+                table.table.table-hover.table-condensed
+                    thead
+                        tr
+                            th="Id"
+                            th="Email address"
+                            th="Newsletter"
+                            th="Reference URL"
+                            th="Test URL"
+                            th="Requested at"
+                            th="Results received at"
+                            th="Email sent at"
+                            th="Email send status"
+                            th="Results"
+                    tbody
+                        each test in tests
+                            tr
+                                td= test.id
+                                td= test.email
+                                if test.newsletter === true
+                                    td= "Accepted"
+                                else
+                                    td= "Declined"
+                                td
+                                    a(href=test.reference_url) #{test.reference_url}
+                                td
+                                    a(href=test.test_url) #{test.test_url}
+                                td= test.createdAtFormatted
 
-                        if test.resultsReceivedAt
-                            td= test.resultsReceivedAtFormatted
-                        else
-                            td= "n/a"
+                                if test.resultsReceivedAt
+                                    td= test.resultsReceivedAtFormatted
+                                else
+                                    td= "n/a"
 
-                        if test.emailSentAt
-                            td= test.emailSentAtFormatted
-                        else
-                            td= "Unavailable"
+                                if test.emailSentAt
+                                    td= test.emailSentAtFormatted
+                                else
+                                    td= "Unavailable"
 
-                        if 'undefined' === typeof test.emailSentStatus || null === test.emailSentStatus
-                            td= "Unavailable"
-                        else
-                            if test.emailSentStatus === true
-                                td= "Succeeded"
-                            else
-                                td= "Failed"
+                                if 'undefined' === typeof test.emailSentStatus || null === test.emailSentStatus
+                                    td= "Unavailable"
+                                else
+                                    if test.emailSentStatus === true
+                                        td= "Succeeded"
+                                    else
+                                        td= "Failed"
 
-                        if test.results_url
-                            td
-                                a(href=test.results_url target="_blank" rel="noopener noreferer") Click to see
-                        else
-                            td= "Unavailable"
+                                if test.results_url
+                                    td
+                                        a(href=test.results_url target="_blank" rel="noopener noreferer") Click to see
+                                else
+                                    td= "Unavailable"
 
-        include _paginate
+            include _paginate
