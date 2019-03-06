@@ -9,7 +9,7 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
         ul.pagination
             if paginate.hasPreviousPages
                 li.first.page-item
-                    a.page-link(href=pages[firstPageIndex].url).page-item.first-page-item «&nbsp;First
+                    a.page-link(href=firstPageUrl).page-item.first-page-item «&nbsp;First
 
                 li.previous.page-item
                     a.page-link(href=paginate.href(true)).page-item.prev-page-item ‹&nbsp;Previous
@@ -23,4 +23,4 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
                     a.page-link(href=paginate.href()).page-item.next-page-item Next&nbsp;›
 
                 li.last
-                    a.page-link(href=pages[lastPageIndex].url).page-item.last-page-item Last&nbsp;»
+                    a.page-link(href=lastPageUrl).page-item.last-page-item Last&nbsp;»

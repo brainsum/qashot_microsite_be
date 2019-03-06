@@ -8,13 +8,15 @@ const adminRouter = express.Router();
 const db = require('../database');
 const moment = require('moment');
 
-adminRouter.use(paginate.middleware(25, 500));
+adminRouter.use(paginate.middleware(50, 500));
 
 adminRouter.get('/', asyncHandler(async function (req, res) {
     res.send('Admin access.');
 }));
 
 const request = require('request');
+const url = require('url');
+const querystring = require('querystring');
 
 /**
  *
@@ -66,6 +68,25 @@ async function getNotifications(uuids) {
     });
 }
 
+/**
+ * Generate a path to be used in the pager.
+ *
+ * @param {Request} req
+ *   The request.
+ * @param {Number} pageNumber
+ *   Page number.
+ *
+ * @return {string}
+ *   The path for the page.
+ */
+function generatePagerPathForPage(req, pageNumber) {
+    const lastPageUrl = url.parse(req.originalUrl);
+    const currentQuery = querystring.parse(lastPageUrl.query || '');
+
+    currentQuery.page = pageNumber;
+
+    return `${lastPageUrl.pathname}?${querystring.stringify(currentQuery)}`;
+}
 
 adminRouter.get('/list', asyncHandler(async function (req, res, next) {
     const Tests = db.models.Tests;
@@ -143,8 +164,8 @@ adminRouter.get('/list', asyncHandler(async function (req, res, next) {
         tests: tests,
         pageCount,
         testCount,
-        firstPageIndex: 0,
-        lastPageIndex: (pageCount > 0) ? pageCount - 1 : 0,
+        firstPageUrl: generatePagerPathForPage(req, 1),
+        lastPageUrl: generatePagerPathForPage(req, pageCount),
         pages: paginate.getArrayPages(req)(5, pageCount, req.query.page)
     });
 }));
