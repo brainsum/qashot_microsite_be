@@ -8,15 +8,19 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
     .navigation.well-sm#pagination
         ul.pager
             if paginate.hasPreviousPages
+                li.first
+                    a(href=pages[firstPageIndex].url).first «&nbsp;First
+
                 li.previous
-                    a(href=paginate.href(true)).prev
-                        i.fa.fa-arrow-circle-left
-                        |  Previous
+                    a(href=paginate.href(true)).prev ‹&nbsp;Previous
+
             if pages
                 each page in pages
                     a.btn.btn-default(href=page.url)= page.number
+
             if paginate.hasNextPages(pageCount)
                 li.next
-                    a(href=paginate.href()).next
-                        | Next&nbsp;
-                        i.fa.fa-arrow-circle-right
+                    a(href=paginate.href()).next Next&nbsp;›
+
+                li.last
+                    a(href=pages[lastPageIndex].url).last Last&nbsp;»

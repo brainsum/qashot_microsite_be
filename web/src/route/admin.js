@@ -8,7 +8,7 @@ const adminRouter = express.Router();
 const db = require('../database');
 const moment = require('moment');
 
-adminRouter.use(paginate.middleware(25, 50));
+adminRouter.use(paginate.middleware(25, 100));
 
 adminRouter.get('/', asyncHandler(async function (req, res) {
     res.send('Admin access.');
@@ -134,7 +134,9 @@ adminRouter.get('/list', asyncHandler(async function (req, res, next) {
         tests: tests,
         pageCount,
         testCount,
-        pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
+        firstPageIndex: 0,
+        lastPageIndex: (pageCount > 0) ? pageCount - 1 : 0,
+        pages: paginate.getArrayPages(req)(5, pageCount, req.query.page)
     });
 }));
 
