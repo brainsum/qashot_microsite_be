@@ -8,7 +8,7 @@ const adminRouter = express.Router();
 const db = require('../database');
 const moment = require('moment');
 
-adminRouter.use(paginate.middleware(25, 100));
+adminRouter.use(paginate.middleware(25, 500));
 
 adminRouter.get('/', asyncHandler(async function (req, res) {
     res.send('Admin access.');
