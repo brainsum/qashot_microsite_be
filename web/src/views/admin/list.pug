@@ -28,13 +28,13 @@ html(lang='en')
                             th="Id"
                             th="Email address"
                             th="Newsletter"
-                            th="Reference URL"
-                            th="Test URL"
                             th="Requested at"
                             th="Results received at"
                             th="Email sent at"
                             th="Email send status"
                             th="Results"
+                            th="Reference URL"
+                            th="Test URL"
                     tbody
                         each test in tests
                             tr
@@ -44,10 +44,6 @@ html(lang='en')
                                     td= "Accepted"
                                 else
                                     td= "Declined"
-                                td
-                                    a(href=test.reference_url) #{test.reference_url}
-                                td
-                                    a(href=test.test_url) #{test.test_url}
                                 td= test.createdAtFormatted
 
                                 if test.resultsReceivedAt
@@ -73,5 +69,10 @@ html(lang='en')
                                         a(href=test.results_url target="_blank" rel="noopener noreferer") Click to see
                                 else
                                     td= "Unavailable"
+
+                                td
+                                    a(href=test.reference_url) #{test.reference_url}
+                                td
+                                    a(href=test.test_url) #{test.test_url}
 
             include _paginate
