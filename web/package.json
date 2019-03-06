@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/brainsum/qashot_microsite_be#readme",
   "dependencies": {
-    "@godaddy/terminus": "^2.4.1",
+    "@godaddy/terminus": "^4.1.0",
     "basic-auth": "^2.0.1",
     "cors": "^2.8.5",
     "express": "^4.16.4",

@@ -35,7 +35,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimiter = require('./src/middleware/rate-limiter');
-const terminus = require('@godaddy/terminus');
+const { createTerminus } = require('@godaddy/terminus');
 const robots = require('express-robots-txt');
 // Custom.
 const db = require('./src/database');
@@ -157,7 +157,7 @@ const run = async () => {
 
     server = app.listen(PORT, HOST, function () {
         console.log(`Express running on http://${HOST}:${PORT}`);
-        terminus(server, terminusOptions);
+        createTerminus(server, terminusOptions);
     });
 
     return 'Running.'
