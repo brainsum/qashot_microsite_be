@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-    image: brainsum/qashot-microsite-backend-web:0.8.0
+    image: brainsum/qashot-microsite-backend-web:0.9.0
     container_name: "${PROJECT_NAME}_web"
     environment:
     - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
@@ -50,7 +50,7 @@ services:
     - "traefik.enable=false"
 
   mailer:
-    image: brainsum/qashot-microsite-backend-mailer:0.5.0
+    image: brainsum/qashot-microsite-backend-mailer:0.6.0
     container_name: "${PROJECT_NAME}_mailer"
     environment:
     - "WORKER_URL=${WORKER_URL}"
@@ -99,7 +99,7 @@ services:
     - "traefik.enable=false"
 
   queue:
-    image: brainsum/qashot-microsite-backend-queue:0.3.0
+    image: brainsum/qashot-microsite-backend-queue:0.4.0
     container_name: "${PROJECT_NAME}_queue"
     environment:
     - "WORKER_URL=${WORKER_URL}"
