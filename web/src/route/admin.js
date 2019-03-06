@@ -73,7 +73,16 @@ adminRouter.get('/list', asyncHandler(async function (req, res, next) {
     let testResults = undefined;
 
     try {
-        testResults = await Tests.findAndCountAll({limit: req.query.limit, offset: req.skip});
+        testResults = await Tests.findAndCountAll({
+            limit: req.query.limit,
+            offset: req.skip,
+            order: [
+                [
+                    'id',
+                    'DESC',
+                ]
+            ],
+        });
     }
     catch (error) {
         return res.status(500).send(error);
