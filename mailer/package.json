@@ -39,7 +39,7 @@
     "pug": "^2.0.3",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "sequelize": "^4.43.0"
+    "sequelize": "^5.8.11"
   },
   "devDependencies": {
     "@types/amqplib": "^0.5.10",
