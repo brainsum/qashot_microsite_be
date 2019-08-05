@@ -5,28 +5,28 @@ const ADD_ENDPOINT = `${WORKER_URL}/api/v1/test/add`;
 
 const request = require('request-promise-native');
 
-function sendToWorker(payload) {
+async function sendToWorker(payload) {
     const reqConfig = {
         url: `${ADD_ENDPOINT}`,
         json: payload
     };
 
-    return request.post(reqConfig)
-        .then(function (response) {
-            return Promise.resolve({
-                code: 200,
-                message: 'Ok.',
-                response: response
-            });
-        })
-        .catch(function (error) {
-            console.error(`Sending the test to the worker failed. Error: ${error}`);
-            return Promise.reject({
-                code: error.statusCode,
-                message: `Remote worker: ${error.message}`,
-                error: error
-            });
-        });
+    try {
+        const response = await request.post(reqConfig);
+        return {
+            code: 200,
+            message: 'Ok.',
+            response: response
+        };
+    }
+    catch (error) {
+        console.error(`Sending the test to the worker failed. Error: ${error}`);
+        return {
+            code: error.statusCode,
+            message: `Remote worker: ${error.message}`,
+            error: error
+        };
+    }
 }
 
 function generateBackstopConfig(test) {
@@ -50,7 +50,7 @@ function generateBackstopConfig(test) {
             referenceUrl: test.reference_url,
             url: test.test_url,
             "readyEvent": null,
-            "delay": 5000,
+            "delay": 15000,
             "misMatchThreshold": 0,
             "selectors": [
                 "document"

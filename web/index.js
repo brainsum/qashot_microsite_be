@@ -149,8 +149,8 @@ const run = async () => {
     }
     catch (error) {
         const timeout = 3000;
-
         console.error(`Error while running sync(). Retry in ${timeout / 1000} seconds..`);
+        console.error(`\t${error}`);
         await delay(timeout);
         return await run();
     }
