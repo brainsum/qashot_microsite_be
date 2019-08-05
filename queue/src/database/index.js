@@ -11,9 +11,6 @@ const connection = new Sequelize('queue_db', process.env.DB_USER, process.env.DB
         acquire: 30000,
         idle: 10000
     },
-
-    // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-    operatorsAliases: false
 });
 
 async function checkConnection() {
