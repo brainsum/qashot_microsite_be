@@ -12,8 +12,6 @@ const config = {
         acquire: 30000,
         idle: 10000
     },
-    // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-    operatorsAliases: false,
 };
 
 module.exports = {

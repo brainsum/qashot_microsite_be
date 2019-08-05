@@ -11,9 +11,6 @@ const connection = new Sequelize(
         host: dbConfig.host,
         dialect: dbConfig.dialect,
         pool: dbConfig.pool,
-
-        // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-        operatorsAliases: dbConfig.operatorsAliases
     }
 );
 
