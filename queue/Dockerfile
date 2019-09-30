@@ -20,7 +20,7 @@ ENV PATH="/home/node/app/node_modules/.bin:$PATH" \
     NODE_ENV=production \
     EXPOSED_PORT=$EXPOSED_PORT
 
-RUN apk add --no-cache tini && \
+RUN apk add --no-cache tini=0.18.0-r0 && \
     mkdir -p /home/node/app/runtime && \
     chown -R node:node /home/node
 
