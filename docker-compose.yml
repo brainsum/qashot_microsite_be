@@ -99,7 +99,7 @@ services:
     - "traefik.enable=false"
 
   queue:
-    image: brainsum/qashot-microsite-backend-queue:0.4.1
+    image: brainsum/qashot-microsite-backend-queue:0.4.2
     container_name: "${PROJECT_NAME}_queue"
     environment:
     - "WORKER_URL=${WORKER_URL}"
