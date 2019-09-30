@@ -50,7 +50,7 @@ function generateBackstopConfig(test) {
             referenceUrl: test.reference_url,
             url: test.test_url,
             "readyEvent": null,
-            "delay": 15000,
+            "delay": 30000,
             "misMatchThreshold": 0,
             "selectors": [
                 "document"
