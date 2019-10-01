@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-    image: brainsum/qashot-microsite-backend-web:0.10.0
+    image: brainsum/qashot-microsite-backend-web:0.11.0
     container_name: "${PROJECT_NAME}_web"
     environment:
     - "JWT_SECRET_KEY=${JWT_SECRET_KEY}"
@@ -50,7 +50,7 @@ services:
     - "traefik.enable=false"
 
   mailer:
-    image: brainsum/qashot-microsite-backend-mailer:0.7.0
+    image: brainsum/qashot-microsite-backend-mailer:0.8.0
     container_name: "${PROJECT_NAME}_mailer"
     environment:
     - "WORKER_URL=${WORKER_URL}"
@@ -99,7 +99,7 @@ services:
     - "traefik.enable=false"
 
   queue:
-    image: brainsum/qashot-microsite-backend-queue:0.5.0
+    image: brainsum/qashot-microsite-backend-queue:0.6.0
     container_name: "${PROJECT_NAME}_queue"
     environment:
     - "WORKER_URL=${WORKER_URL}"
@@ -124,6 +124,8 @@ services:
     - "traefik.docker.network=${PROJECT_NAME}_backend"
 
   queue_db:
+#    image: postgres:11.5-alpine
+#    image: bitnami/postgresql:10.10.0
     image: bitnami/postgresql:10.5.0
     container_name: "${PROJECT_NAME}_queue_db"
     stop_grace_period: 10s
@@ -142,7 +144,9 @@ services:
   # Note: Probably not needed, but:
   # https://github.com/bitnami/bitnami-docker-redis#setting-up-a-replication
   redis_rate_limiter:
-    image: bitnami/redis:4.0.11
+#    image: redis:5.0.6-alpine3.10
+#    image: bitnami/redis:5.0.5
+    image: bitnami/redis:4.0.14
     container_name: "${PROJECT_NAME}_redis_rate_limiter"
     restart: unless-stopped
     environment:
@@ -156,9 +160,11 @@ services:
     - "traefik.enable=false"
 
   mail_server:
-    image: boky/postfix
+    image: boky/postfix:v1.1.3
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_mail_server"
+    # @todo: v1 allows DKIM, set it up. @see: https://github.com/bokysan/docker-postfix#dkim
+    # @todo: TZ environment variable to set the timezone of the container
     environment:
     - "HOSTNAME=${MAIL_SERVER_HOSTNAME}"
     - "ALLOWED_SENDER_DOMAINS=${MAIL_SERVER_ALLOWED_SENDER_DOMAINS}"
@@ -169,7 +175,7 @@ services:
 
   # Other.
   traefik:
-    image: traefik:v1.6.6
+    image: traefik:v1.7.18-alpine
     container_name: "${PROJECT_NAME}_traefik"
     restart: unless-stopped
     ports:
