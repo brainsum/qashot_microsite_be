@@ -37,7 +37,7 @@
     "express-rate-limit": "^5.0.0",
     "express-robots-txt": "^0.4.1",
     "helmet": "^3.21.1",
-    "ioredis": "^4.14.1",
+    "ioredis": "^4.27.8",
     "jsonschema": "^1.2.4",
     "moment": "^2.24.0",
     "pg": "^7.12.1",
